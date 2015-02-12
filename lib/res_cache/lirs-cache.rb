@@ -1,4 +1,4 @@
-module RCache
+module ResCache
   class LirsCache
 
     attr_reader :limit
@@ -18,7 +18,7 @@ module RCache
       @queue = UtilHash.new
     end
 
-    def limit=(*args)
+    def limit=(args)
       s_limit, q_limit = args
       
       raise ArgumentError.new('S Limit must be 1 or greater.') if s_limit.nil? || s_limit < 1
@@ -96,7 +96,7 @@ module RCache
     end
 
     def raw
-      @cache
+      {cache: @cache.clone, stack: @stack.clone, queue: @queue.clone}
     end
 
     def priority
@@ -125,38 +125,45 @@ module RCache
     def resize
       s_size = 0
 
-      @stack.each_set do |key, _|
+      @stack.each do |key, _|
         s_size += 1 if @cache.has_key?(key) && !@queue.has_key?(key)
       end
 
       while s_size < @s_limit && @queue.size > 0
-        q_head_key = @queue.get_head_key
+        key = @queue.get_head
 
-        unless @stack.has_key?(q_head_key)
-          @stack.set_tail(q_head_key, nil)
+        unless @stack.has_key?(key)
+          @stack.set_tail(key, nil)
         end
 
-        @queue.delete(q_head_key)
+        @queue.delete(key)
+
         s_size += 1
       end
 
       while @queue.size > 0 && @cache.size > @limit
-        key = @queue.get_tail[0]
+        key = @queue.get_tail
+
         @queue.delete(key)
         @cache.delete(key)
       end
 
       while @cache.size > @limit
-        key = @stack.get_tail[0]
+        key = @stack.get_tail
+
         @cache.delete(key)
+        trim_history
+
         s_size -= 1
       end
 
       while s_size > @s_limit
-        key = @stack.get_tail[0]
+        key = @stack.get_tail
+
         @stack.delete(key)
         @queue.set_head(key, nil)
         trim_history
+
         s_size -= 1
       end
     end

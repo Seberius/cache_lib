@@ -1,4 +1,4 @@
-module RCache
+module ResCache
   class UtilHash < Hash
     def get_head
       keys.last

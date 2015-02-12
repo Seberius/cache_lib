@@ -1,7 +1,15 @@
-module RCache
+module ResCache
   class BasicCache
-    def initialize(_)
+
+    attr_reader :limit
+
+    def initialize
       @cache = UtilHash.new
+      @limit = nil
+    end
+
+    def limit=(args)
+      @limit = nil
     end
 
     def get(key)
@@ -42,7 +50,7 @@ module RCache
     end
 
     def raw
-      @cache
+      {cache: @cache.clone}
     end
 
     def priority
