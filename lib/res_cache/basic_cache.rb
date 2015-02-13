@@ -1,6 +1,5 @@
 module ResCache
   class BasicCache
-
     attr_reader :limit
 
     def initialize
@@ -8,7 +7,7 @@ module ResCache
       @limit = nil
     end
 
-    def limit=(args)
+    def limit=(_)
       @limit = nil
     end
 
@@ -50,7 +49,7 @@ module ResCache
     end
 
     def raw
-      {cache: @cache.clone}
+      { cache: @cache.clone }
     end
 
     def priority

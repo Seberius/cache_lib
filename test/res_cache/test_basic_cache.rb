@@ -17,9 +17,9 @@ class TestBasicCache < MiniTest::Test
   end
 
   def test_get
-    assert_equal 1, @cache.get(:a) {1}
-    assert_equal 1, @cache.get(:a) {2}
-    assert_equal 2, @cache.get(:b) {2}
+    assert_equal 1, @cache.get(:a) { 1 }
+    assert_equal 1, @cache.get(:a) { 2 }
+    assert_equal 2, @cache.get(:b) { 2 }
   end
 
   def test_set
@@ -90,7 +90,7 @@ class TestBasicCache < MiniTest::Test
     @cache.set(:a, 1)
     @cache.set(:b, 2)
 
-    assert_equal({:a => 1, :b => 2}, @cache.raw[:cache])
+    assert_equal({ a: 1, b: 2 }, @cache.raw[:cache])
     assert_equal ResCache::UtilHash, @cache.raw[:cache].class
   end
 

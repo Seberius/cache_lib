@@ -1,12 +1,11 @@
 module ResCache
-  class LruCache
-
+  class FifoCache
     attr_reader :limit
 
     def initialize(*args)
       limit, _ = args
-
-      raise ArgumentError.new("Cache Limit must be 1 or greater: #{limit}") if limit.nil? || limit < 1
+      fail ArgumentError "Cache Limit must be 1 or greater: #{limit}" if
+          limit.nil? || limit < 1
 
       @limit = limit
       @cache = UtilHash.new
@@ -14,7 +13,8 @@ module ResCache
 
     def limit=(args)
       limit, _ = args
-      raise ArgumentError.new("Cache Limit must be 1 or greater: #{limit}") if limit.nil? || limit < 1
+      fail ArgumentError "Cache Limit must be 1 or greater: #{limit}" if
+          limit.nil? || limit < 1
 
       @limit = limit
 
@@ -22,26 +22,20 @@ module ResCache
     end
 
     def get(key)
-      value = @cache.delete(key)
+      value = hit(key)
       if value
-        @cache[key] = value
+        value
       else
         miss(key, yield)
       end
     end
 
     def set(key, value)
-      @cache.delete(key)
       miss(key, value)
     end
 
     def lookup(key)
-      value = @cache.delete(key)
-      if value
-        @cache[key] = value
-      else
-        nil
-      end
+      @cache[key]
     end
 
     def evict(key)
@@ -65,7 +59,7 @@ module ResCache
     end
 
     def raw
-      {cache: @cache.clone}
+      { cache: @cache.clone }
     end
 
     def priority
@@ -78,19 +72,17 @@ module ResCache
     protected
 
     def resize
-      while @cache.size > @limit
-        @cache.delete(@cache.get_tail)
-      end
+      @cache.delete(@cache.tail) while @cache.size > @limit
     end
 
     def hit(key)
-      @cache.refresh(key)
+      @cache[key]
     end
 
     def miss(key, value)
       @cache[key] = value
 
-      @cache.delete(@cache.get_tail) if @cache.size > @limit
+      @cache.delete(@cache.tail) if @cache.size > @limit
 
       value
     end

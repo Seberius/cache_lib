@@ -7,7 +7,7 @@ class TestResCache < MiniTest::Test
     fifo = ResCache.create :fifo, 1_000
     lru = ResCache.create :lru, 1_000
     lirs = ResCache.create :lirs, 950, 50
-    
+
     assert_equal basic.class, ResCache::BasicCache
     assert_equal fifo.class, ResCache::FifoCache
     assert_equal lru.class, ResCache::LruCache

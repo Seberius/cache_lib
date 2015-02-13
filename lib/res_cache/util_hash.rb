@@ -1,10 +1,10 @@
 module ResCache
   class UtilHash < Hash
-    def get_head
+    def head
       keys.last
     end
 
-    def get_tail
+    def tail
       first[0]
     end
 

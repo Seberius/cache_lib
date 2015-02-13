@@ -1,7 +1,7 @@
 require 'monitor'
 
 module ResCache
-  class SafeLruCache < LruCache
+  class SafeLirsCache < LirsCache
     include MonitorMixin
 
     def initialize(*args)

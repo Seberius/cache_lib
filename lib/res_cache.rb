@@ -1,42 +1,32 @@
-require_relative 'res_cache/util-hash'
-require_relative 'res_cache/basic-cache'
-require_relative 'res_cache/fifo-cache'
-require_relative 'res_cache/lru-cache'
-require_relative 'res_cache/lirs-cache'
-require_relative 'res_cache/safe-basic-cache'
-require_relative 'res_cache/safe-fifo-cache'
-require_relative 'res_cache/safe-lru-cache'
-require_relative 'res_cache/safe-lirs-cache'
+require_relative 'res_cache/util_hash'
+require_relative 'res_cache/basic_cache'
+require_relative 'res_cache/fifo_cache'
+require_relative 'res_cache/lru_cache'
+require_relative 'res_cache/lirs_cache'
+require_relative 'res_cache/safe_basic_cache'
+require_relative 'res_cache/safe_fifo_cache'
+require_relative 'res_cache/safe_lru_cache'
+require_relative 'res_cache/safe_lirs_cache'
 require_relative 'res_cache/version'
 
 module ResCache
   def self.create(type, *args)
     case type
-      when :basic
-        BasicCache.new(*args)
-      when :fifo
-        FifoCache.new(*args)
-      when :lru
-        LruCache.new(*args)
-      when :lirs
-        LirsCache.new(*args)
-      else
-        raise ArgumentError.new("Cache type not recognized: #{type}")
+    when :basic then BasicCache.new(*args)
+    when :fifo then FifoCache.new(*args)
+    when :lru then LruCache.new(*args)
+    when :lirs then LirsCache.new(*args)
+    else fail ArgumentError "Cache type not recognized: #{type}"
     end
   end
 
   def self.safe_create(type, *args)
     case type
-      when :basic
-        SafeBasicCache.new(*args)
-      when :fifo
-        SafeFifoCache.new(*args)
-      when :lru
-        SafeLruCache.new(*args)
-      when :lirs
-        SafeLirsCache.new(*args)
-      else
-        raise ArgumentError.new("Cache type not recognized: #{type}")
+    when :basic then SafeBasicCache.new(*args)
+    when :fifo then SafeFifoCache.new(*args)
+    when :lru then SafeLruCache.new(*args)
+    when :lirs then SafeLirsCache.new(*args)
+    else fail ArgumentError "Cache type not recognized: #{type}"
     end
   end
 
@@ -45,7 +35,7 @@ module ResCache
 
     old_raw = old_cache.raw[:cache]
     old_priority = old_cache.priority.reverse!
-    old_priority.each {|key| new_cache.set(key, old_raw[key])}
+    old_priority.each { |key| new_cache.set(key, old_raw[key]) }
     old_cache.clear
 
     new_cache
@@ -56,7 +46,7 @@ module ResCache
 
     old_raw = old_cache.raw[:cache]
     old_priority = old_cache.priority.reverse!
-    old_priority.each {|key| new_cache.set(key, old_raw[key])}
+    old_priority.each { |key| new_cache.set(key, old_raw[key]) }
     old_cache.clear
 
     new_cache
