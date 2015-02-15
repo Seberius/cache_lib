@@ -1,7 +1,5 @@
 module ResCache
-  class LirsCache
-    attr_reader :limit
-
+  class LirsCache < BasicCache
     def initialize(*args)
       s_limit, q_limit = args
 
@@ -75,18 +73,6 @@ module ResCache
       @cache.clear
       @stack.clear
       @queue.clear
-    end
-
-    def key?(key)
-      @cache.key?(key)
-    end
-
-    def to_a
-      @cache.to_a.reverse!
-    end
-
-    def size
-      @cache.size
     end
 
     def raw

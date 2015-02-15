@@ -1,7 +1,5 @@
 module ResCache
-  class LruCache
-    attr_reader :limit
-
+  class LruCache < BasicCache
     def initialize(*args)
       limit, _ = args
 
@@ -40,34 +38,6 @@ module ResCache
     def lookup(key)
       value = @cache.delete(key)
       @cache[key] = value if value
-    end
-
-    def evict(key)
-      @cache.delete(key)
-    end
-
-    def clear
-      @cache.clear
-    end
-
-    def key?(key)
-      @cache.key?(key)
-    end
-
-    def to_a
-      @cache.to_a.reverse!
-    end
-
-    def size
-      @cache.size
-    end
-
-    def raw
-      { cache: @cache.clone }
-    end
-
-    def priority
-      @cache.keys.reverse!
     end
 
     alias_method :[], :lookup

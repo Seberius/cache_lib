@@ -1,7 +1,5 @@
 module ResCache
-  class FifoCache
-    attr_reader :limit
-
+  class FifoCache < BasicCache
     def initialize(*args)
       limit, _ = args
       fail ArgumentError "Cache Limit must be 1 or greater: #{limit}" if
@@ -21,51 +19,6 @@ module ResCache
       resize
     end
 
-    def get(key)
-      value = hit(key)
-      if value
-        value
-      else
-        miss(key, yield)
-      end
-    end
-
-    def set(key, value)
-      miss(key, value)
-    end
-
-    def lookup(key)
-      @cache[key]
-    end
-
-    def evict(key)
-      @cache.delete(key)
-    end
-
-    def clear
-      @cache.clear
-    end
-
-    def key?(key)
-      @cache.key?(key)
-    end
-
-    def to_a
-      @cache.to_a.reverse!
-    end
-
-    def size
-      @cache.size
-    end
-
-    def raw
-      { cache: @cache.clone }
-    end
-
-    def priority
-      @cache.keys.reverse!
-    end
-
     alias_method :[], :lookup
     alias_method :[]=, :set
 
@@ -73,10 +26,6 @@ module ResCache
 
     def resize
       @cache.delete(@cache.tail) while @cache.size > @limit
-    end
-
-    def hit(key)
-      @cache[key]
     end
 
     def miss(key, value)

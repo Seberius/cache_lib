@@ -21,7 +21,7 @@ module ResCache
     end
 
     def set(key, value)
-      @cache[key] = value
+      miss(key, value)
     end
 
     def evict(key)
@@ -34,6 +34,12 @@ module ResCache
 
     def clear
       @cache.clear
+    end
+
+    def each
+      @cache.each do |pair|
+        yield pair
+      end
     end
 
     def key?(key)
