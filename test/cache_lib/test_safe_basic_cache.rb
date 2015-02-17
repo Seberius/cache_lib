@@ -1,10 +1,10 @@
-require 'res_cache'
+require 'cache_lib'
 require 'minitest/autorun'
 
 require_relative 'test_basic_cache'
 
 class TestSafeBasicCache < TestBasicCache
   def setup
-    @cache = ResCache.safe_create :basic
+    @cache = CacheLib.safe_create :basic
   end
 end

@@ -1,6 +1,6 @@
 require_relative 'safe_sync'
 
-module ResCache
+module CacheLib
   class SafeFifoCache < FifoCache
     include SafeSync
   end

@@ -1,4 +1,4 @@
-module ResCache
+module CacheLib
   class LruCache < BasicCache
     def initialize(*args)
       limit, _ = args
@@ -38,6 +38,11 @@ module ResCache
     def lookup(key)
       value = @cache.delete(key)
       @cache[key] = value if value
+    end
+
+    def inspect
+      "#{self.class} with a limit of #{@limit} "\
+      "currently caching #{@cache.size} items."
     end
 
     alias_method :[], :lookup

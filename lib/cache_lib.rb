@@ -1,15 +1,15 @@
-require_relative 'res_cache/util_hash'
-require_relative 'res_cache/basic_cache'
-require_relative 'res_cache/fifo_cache'
-require_relative 'res_cache/lru_cache'
-require_relative 'res_cache/lirs_cache'
-require_relative 'res_cache/safe_basic_cache'
-require_relative 'res_cache/safe_fifo_cache'
-require_relative 'res_cache/safe_lru_cache'
-require_relative 'res_cache/safe_lirs_cache'
-require_relative 'res_cache/version'
+require_relative 'cache_lib/util_hash'
+require_relative 'cache_lib/basic_cache'
+require_relative 'cache_lib/fifo_cache'
+require_relative 'cache_lib/lru_cache'
+require_relative 'cache_lib/lirs_cache'
+require_relative 'cache_lib/safe_basic_cache'
+require_relative 'cache_lib/safe_fifo_cache'
+require_relative 'cache_lib/safe_lru_cache'
+require_relative 'cache_lib/safe_lirs_cache'
+require_relative 'cache_lib/version'
 
-module ResCache
+module CacheLib
   def self.create(type, *args)
     case type
     when :basic then BasicCache.new(*args)

@@ -1,16 +1,16 @@
 # -*- encoding: utf-8 -*-
 
-require File.expand_path('../lib/res_cache/version', __FILE__)
+require File.expand_path('../lib/cache_lib/version', __FILE__)
 
 Gem::Specification.new do |gem|
-  gem.name          = 'res_cache'
-  gem.version       = ResCache::VERSION
+  gem.name          = 'cache_lib'
+  gem.version       = CacheLib::VERSION
   gem.summary       = 'A Ruby Caching Library'
   gem.description   = 'A Ruby caching library implementing Basic, FIFO, LRU and LIRS caching strategies.'
   gem.license       = 'MIT'
   gem.authors       = 'Kaijah Hougham'
   gem.email         = 'github@seberius.com'
-  gem.homepage      = 'https://github.com/seberius/res_cache'
+  gem.homepage      = 'https://github.com/seberius/cache_lib'
 
   gem.required_ruby_version = '>= 1.9.3'
 

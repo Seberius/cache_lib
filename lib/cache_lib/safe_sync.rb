@@ -1,6 +1,6 @@
 require 'monitor'
 
-module ResCache
+module CacheLib
   module SafeSync
     include MonitorMixin
 
@@ -81,6 +81,12 @@ module ResCache
     end
 
     def priority
+      synchronize do
+        super
+      end
+    end
+
+    def inspect
       synchronize do
         super
       end

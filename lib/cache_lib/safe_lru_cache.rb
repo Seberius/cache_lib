@@ -1,6 +1,6 @@
 require_relative 'safe_sync'
 
-module ResCache
+module CacheLib
   class SafeLruCache < LruCache
     include SafeSync
   end

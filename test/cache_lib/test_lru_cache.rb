@@ -1,11 +1,11 @@
-require 'res_cache'
+require 'cache_lib'
 require 'minitest/autorun'
 
 require_relative 'test_basic_cache'
 
 class TestLruCache < TestBasicCache
   def setup
-    @cache = ResCache.create :lru, 5
+    @cache = CacheLib.create :lru, 5
   end
 
   def test_limit
@@ -16,6 +16,15 @@ class TestLruCache < TestBasicCache
     @cache.limit = 90
 
     assert_equal 90, @cache.limit
+  end
+
+  def test_inspect
+    @cache.set(:a, 1)
+    @cache.set(:b, 2)
+
+    assert_equal "#{@cache.class} with a limit of 5 "\
+                 "currently caching 2 items.",
+                 @cache.inspect
   end
 
   def test_lru_promotion

@@ -1,4 +1,4 @@
-module ResCache
+module CacheLib
   class FifoCache < BasicCache
     def initialize(*args)
       limit, _ = args
@@ -17,6 +17,11 @@ module ResCache
       @limit = limit
 
       resize
+    end
+
+    def inspect
+      "#{self.class} with a limit of #{@limit} "\
+      "currently caching #{@cache.size} items."
     end
 
     alias_method :[], :lookup

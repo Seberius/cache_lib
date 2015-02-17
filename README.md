@@ -1,4 +1,4 @@
-# ResCache
+# CacheLib
 #### A Ruby caching library implementing Basic, FIFO, LRU and LIRS caches.
 
 ## Usage
@@ -7,23 +7,23 @@
 require 'res_cache'
 
 # Basic
-cache = ResCache.create :basic
+cache = CacheLib.create :basic
 
 # FIFO with a limit of 100
-cache = ResCache.create :fifo, 100
+cache = CacheLib.create :fifo, 100
 
 # LRU with a limit of 100
-cache = ResCache.create :lru, 100
+cache = CacheLib.create :lru, 100
 
 # LIRS with a cache limit of 100, made up of a S limit of 95 and a Q limit of 5.
 # Read the LIRS Cache section for more information.
-cache = ResCache.create :lirs, 95, 5
+cache = CacheLib.create :lirs, 95, 5
 ```
 
 ### Using the cache
 ```ruby
 # Cache methods remain the same across all variations
-cache = ResCache.create :lru, 100
+cache = CacheLib.create :lru, 100
 
 cache.get(:a) { 'Apple' }
 # => 'Apple'

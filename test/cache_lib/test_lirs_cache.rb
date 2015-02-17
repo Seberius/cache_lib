@@ -1,11 +1,11 @@
-require 'res_cache'
+require 'cache_lib'
 require 'minitest/autorun'
 
 require_relative 'test_basic_cache'
 
 class TestLirsCache < TestBasicCache
   def setup
-    @cache = ResCache.create :lirs, 3, 2
+    @cache = CacheLib.create :lirs, 3, 2
   end
 
   def test_limit
@@ -18,6 +18,16 @@ class TestLirsCache < TestBasicCache
     assert_equal 100, @cache.limit
   end
 
+  def test_inspect
+    @cache.set(:a, 1)
+    @cache.set(:b, 2)
+
+    assert_equal "#{@cache.class} with a limit of 5, "\
+                 "s_limit of 3 and q_limit of 2 "\
+                 "currently caching 2 items.",
+                 @cache.inspect
+  end
+
   def test_raw
     @cache.set(:a, 1)
     @cache.set(:b, 2)
@@ -28,9 +38,9 @@ class TestLirsCache < TestBasicCache
     assert_equal({ a: nil, b: nil }, raw_cache[:stack])
     assert_equal({}, raw_cache[:queue])
 
-    assert_equal ResCache::UtilHash, raw_cache[:cache].class
-    assert_equal ResCache::UtilHash, raw_cache[:stack].class
-    assert_equal ResCache::UtilHash, raw_cache[:queue].class
+    assert_equal CacheLib::UtilHash, raw_cache[:cache].class
+    assert_equal CacheLib::UtilHash, raw_cache[:stack].class
+    assert_equal CacheLib::UtilHash, raw_cache[:queue].class
   end
 
   def test_lirs_promotion

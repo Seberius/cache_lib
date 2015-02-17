@@ -1,4 +1,4 @@
-module ResCache
+module CacheLib
   class BasicCache
     attr_reader :limit
 
@@ -34,6 +34,7 @@ module ResCache
 
     def clear
       @cache.clear
+      nil
     end
 
     def each
@@ -60,6 +61,10 @@ module ResCache
 
     def priority
       @cache.keys.reverse!
+    end
+
+    def inspect
+      "#{self.class} currently caching #{@cache.size} items."
     end
 
     alias_method :[], :lookup

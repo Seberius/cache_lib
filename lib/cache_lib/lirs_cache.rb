@@ -1,4 +1,4 @@
-module ResCache
+module CacheLib
   class LirsCache < BasicCache
     def initialize(*args)
       s_limit, q_limit = args
@@ -73,6 +73,7 @@ module ResCache
       @cache.clear
       @stack.clear
       @queue.clear
+      nil
     end
 
     def raw
@@ -92,6 +93,12 @@ module ResCache
       end
 
       hir_keys.concat(lir_keys).reverse!
+    end
+
+    def inspect
+      "#{self.class} with a limit of #{@limit}, "\
+      "s_limit of #{@s_limit} and q_limit of #{@q_limit} "\
+      "currently caching #{@cache.size} items."
     end
 
     alias_method :[], :lookup

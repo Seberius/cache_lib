@@ -1,4 +1,4 @@
-module ResCache
+module CacheLib
   class UtilHash < Hash
     def head
       keys.last

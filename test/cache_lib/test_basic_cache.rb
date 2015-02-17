@@ -1,9 +1,9 @@
-require 'res_cache'
+require 'cache_lib'
 require 'minitest/autorun'
 
 class TestBasicCache < MiniTest::Test
   def setup
-    @cache = ResCache.create :basic
+    @cache = CacheLib.create :basic
   end
 
   def test_limit
@@ -56,7 +56,7 @@ class TestBasicCache < MiniTest::Test
     @cache.set(:a, 1)
     @cache.set(:b, 2)
 
-    assert_equal({}, @cache.clear)
+    assert_equal(nil, @cache.clear)
 
     assert_equal nil, @cache.lookup(:a)
     assert_equal nil, @cache.lookup(:b)
@@ -91,7 +91,7 @@ class TestBasicCache < MiniTest::Test
     @cache.set(:b, 2)
 
     assert_equal({ a: 1, b: 2 }, @cache.raw[:cache])
-    assert_equal ResCache::UtilHash, @cache.raw[:cache].class
+    assert_equal CacheLib::UtilHash, @cache.raw[:cache].class
   end
 
   def test_priority
@@ -99,5 +99,13 @@ class TestBasicCache < MiniTest::Test
     @cache.set(:b, 2)
 
     assert_equal [:b, :a], @cache.priority
+  end
+
+  def test_inspect
+    @cache.set(:a, 1)
+    @cache.set(:b, 2)
+
+    assert_equal "#{@cache.class} currently caching 2 items.",
+                 @cache.inspect
   end
 end
