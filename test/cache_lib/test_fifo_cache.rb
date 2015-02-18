@@ -19,8 +19,8 @@ class TestFifoCache < TestBasicCache
   end
 
   def test_inspect
-    @cache.set(:a, 1)
-    @cache.set(:b, 2)
+    @cache.store(:a, 1)
+    @cache.store(:b, 2)
 
     assert_equal "#{@cache.class} with a limit of 5 "\
                  "currently caching 2 items.",
@@ -28,7 +28,7 @@ class TestFifoCache < TestBasicCache
   end
 
   def test_fifo_eviction
-    (1..6).each { |i| @cache.set(i, i) }
+    (1..6).each { |i| @cache.store(i, i) }
 
     assert_equal 5, @cache.size
     assert_equal({ 2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6 },
@@ -36,9 +36,9 @@ class TestFifoCache < TestBasicCache
   end
 
   def test_upsize
-    (1..5).each { |i| @cache.set(i, i) }
+    (1..5).each { |i| @cache.store(i, i) }
     @cache.limit = 7
-    (6..8).each { |i| @cache.set(i, i) }
+    (6..8).each { |i| @cache.store(i, i) }
 
     assert_equal 7, @cache.size
     assert_equal({ 2 => 2, 3 => 3, 4 => 4, 5 => 5,
@@ -47,7 +47,7 @@ class TestFifoCache < TestBasicCache
   end
 
   def test_downsize
-    (1..5).each { |i| @cache.set(i, i) }
+    (1..5).each { |i| @cache.store(i, i) }
     @cache.limit = 3
 
     assert_equal 3, @cache.size

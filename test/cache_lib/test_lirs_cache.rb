@@ -19,8 +19,8 @@ class TestLirsCache < TestBasicCache
   end
 
   def test_inspect
-    @cache.set(:a, 1)
-    @cache.set(:b, 2)
+    @cache.store(:a, 1)
+    @cache.store(:b, 2)
 
     assert_equal "#{@cache.class} with a limit of 5, "\
                  "s_limit of 3 and q_limit of 2 "\
@@ -29,8 +29,8 @@ class TestLirsCache < TestBasicCache
   end
 
   def test_raw
-    @cache.set(:a, 1)
-    @cache.set(:b, 2)
+    @cache.store(:a, 1)
+    @cache.store(:b, 2)
 
     raw_cache = @cache.raw
 
@@ -44,7 +44,7 @@ class TestLirsCache < TestBasicCache
   end
 
   def test_lirs_promotion
-    (1..5).each { |i| @cache.set(i, i) }
+    (1..5).each { |i| @cache.store(i, i) }
     @cache.lookup(4)
     @cache.lookup(1)
 
@@ -58,10 +58,10 @@ class TestLirsCache < TestBasicCache
   end
 
   def test_lirs_eviction
-    (1..5).each { |i| @cache.set(i, i) }
+    (1..5).each { |i| @cache.store(i, i) }
     @cache.lookup(4)
     @cache.lookup(1)
-    @cache.set(6, 6)
+    @cache.store(6, 6)
 
     raw_cache = @cache.raw
 
@@ -75,9 +75,9 @@ class TestLirsCache < TestBasicCache
   end
 
   def test_upsize
-    (1..5).each { |i| @cache.set(i, i) }
+    (1..5).each { |i| @cache.store(i, i) }
     @cache.limit = 5, 2
-    (6..8).each { |i| @cache.set(i, i) }
+    (6..8).each { |i| @cache.store(i, i) }
 
     raw_cache = @cache.raw
 
@@ -92,7 +92,7 @@ class TestLirsCache < TestBasicCache
   end
 
   def test_downsize
-    (1..5).each { |i| @cache.set(i, i) }
+    (1..5).each { |i| @cache.store(i, i) }
     @cache.limit = 2, 1
 
     raw_cache = @cache.raw

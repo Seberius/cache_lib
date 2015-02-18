@@ -29,26 +29,4 @@ module CacheLib
     else fail ArgumentError "Cache type not recognized: #{type}"
     end
   end
-
-  def self.update(old_cache, type, *args)
-    new_cache = create(type, *args)
-
-    old_raw = old_cache.raw[:cache]
-    old_priority = old_cache.priority.reverse!
-    old_priority.each { |key| new_cache.set(key, old_raw[key]) }
-    old_cache.clear
-
-    new_cache
-  end
-
-  def self.safe_update(old_cache, type, *args)
-    new_cache = safe_create(type, *args)
-
-    old_raw = old_cache.raw[:cache]
-    old_priority = old_cache.priority.reverse!
-    old_priority.each { |key| new_cache.set(key, old_raw[key]) }
-    old_cache.clear
-
-    new_cache
-  end
 end

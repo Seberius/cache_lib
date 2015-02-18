@@ -26,13 +26,19 @@ module CacheLib
       end
     end
 
-    def set(key, value)
+    def store(key, value)
       synchronize do
         super(key, value)
       end
     end
 
     def lookup(key)
+      synchronize do
+        super(key)
+      end
+    end
+
+    def fetch(key)
       synchronize do
         super(key)
       end
@@ -80,12 +86,6 @@ module CacheLib
       end
     end
 
-    def priority
-      synchronize do
-        super
-      end
-    end
-
     def inspect
       synchronize do
         super
@@ -93,6 +93,6 @@ module CacheLib
     end
 
     alias_method :[], :lookup
-    alias_method :[]=, :set
+    alias_method :[]=, :store
   end
 end

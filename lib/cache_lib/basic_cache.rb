@@ -3,8 +3,17 @@ module CacheLib
     attr_reader :limit
 
     def initialize
-      @cache = UtilHash.new
       @limit = nil
+
+      @cache = UtilHash.new
+    end
+
+    def initialize_copy(source)
+      source_raw = source.raw
+
+      @limit = source_raw[:limit]
+
+      @cache = source_raw[:cache]
     end
 
     def limit=(_)
@@ -13,6 +22,7 @@ module CacheLib
 
     def get(key)
       value = hit(key)
+
       if value
         value
       else
@@ -20,16 +30,27 @@ module CacheLib
       end
     end
 
-    def set(key, value)
+    def store(key, value)
       miss(key, value)
-    end
-
-    def evict(key)
-      @cache.delete(key)
     end
 
     def lookup(key)
       @cache[key]
+    end
+
+    def fetch(key)
+      has_key = true
+      value = @cache.fetch(key) { has_key = false }
+
+      if has_key
+        value
+      else
+        yield if block_given?
+      end
+    end
+
+    def evict(key)
+      @cache.delete(key)
     end
 
     def clear
@@ -51,16 +72,21 @@ module CacheLib
       @cache.to_a.reverse!
     end
 
+    def keys
+      @cache.keys.reverse!
+    end
+
+    def values
+      @cache.values.reverse!
+    end
+
     def size
       @cache.size
     end
 
     def raw
-      { cache: @cache.clone }
-    end
-
-    def priority
-      @cache.keys.reverse!
+      { limit: @limit,
+        cache: @cache.clone }
     end
 
     def inspect
@@ -68,7 +94,7 @@ module CacheLib
     end
 
     alias_method :[], :lookup
-    alias_method :[]=, :set
+    alias_method :[]=, :store
 
     protected
 

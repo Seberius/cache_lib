@@ -2,10 +2,12 @@ module CacheLib
   class FifoCache < BasicCache
     def initialize(*args)
       limit, _ = args
+
       fail ArgumentError "Cache Limit must be 1 or greater: #{limit}" if
           limit.nil? || limit < 1
 
       @limit = limit
+
       @cache = UtilHash.new
     end
 
@@ -25,7 +27,7 @@ module CacheLib
     end
 
     alias_method :[], :lookup
-    alias_method :[]=, :set
+    alias_method :[]=, :store
 
     protected
 
@@ -36,7 +38,7 @@ module CacheLib
     def miss(key, value)
       @cache[key] = value
 
-      @cache.delete(@cache.tail) if @cache.size > @limit
+      @cache.pop_tail if @cache.size > @limit
 
       value
     end

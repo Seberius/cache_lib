@@ -17,6 +17,18 @@ module CacheLib
       @queue = UtilHash.new
     end
 
+    def initialize_copy(source)
+      source_raw = source.raw
+
+      @limit = source_raw[:limit]
+      @s_limit = source_raw[:s_limit]
+      @q_limit = source_raw[:q_limit]
+
+      @cache = source_raw[:cache]
+      @stack = source_raw[:stack]
+      @queue = source_raw[:queue]
+    end
+
     def limit=(args)
       s_limit, q_limit = args
 
@@ -40,7 +52,7 @@ module CacheLib
       end
     end
 
-    def set(key, value)
+    def store(key, value)
       if @cache.key?(key)
         @cache[key] = value
         hit(key)
@@ -51,6 +63,14 @@ module CacheLib
 
     def lookup(key)
       hit(key) if @cache.key?(key)
+    end
+
+    def fetch(key)
+      if @cache.key?(key)
+        hit(key)
+      else
+        yield if block_given?
+      end
     end
 
     def evict(key)
@@ -77,22 +97,12 @@ module CacheLib
     end
 
     def raw
-      { cache: @cache.clone, stack: @stack.clone, queue: @queue.clone }
-    end
-
-    def priority
-      lir_keys = []
-      hir_keys = []
-
-      @stack.each_key do |key|
-        lir_keys.push(key) if @cache.key?(key) && !@queue.key?(key)
-      end
-
-      @queue.each_key do |key|
-        hir_keys.push(key) unless @stack.key?(key)
-      end
-
-      hir_keys.concat(lir_keys).reverse!
+      { limit: @limit,
+        s_limit: @s_limit,
+        q_limit: @q_limit,
+        cache: @cache.clone,
+        stack: @stack.clone,
+        queue: @queue.clone }
     end
 
     def inspect
@@ -102,7 +112,7 @@ module CacheLib
     end
 
     alias_method :[], :lookup
-    alias_method :[]=, :set
+    alias_method :[]=, :store
 
     protected
 
@@ -166,10 +176,10 @@ module CacheLib
 
           demote_lir
         else
-          old_s_key = @stack.tail
+          s_tail_key = @stack.tail
           @stack.refresh(key)
 
-          trim_stack if old_s_key == key
+          trim_stack if s_tail_key == key
         end
       else
         @stack.set_head(key, nil)

@@ -17,6 +17,10 @@ module CacheLib
       replace(Hash[key, value].merge(self))
     end
 
+    def pop_tail
+      delete(tail)
+    end
+
     def refresh(key)
       value = delete(key)
       self[key] = value

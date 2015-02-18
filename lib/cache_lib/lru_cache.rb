@@ -7,6 +7,7 @@ module CacheLib
           limit.nil? || limit < 1
 
       @limit = limit
+
       @cache = UtilHash.new
     end
 
@@ -22,22 +23,34 @@ module CacheLib
     end
 
     def get(key)
-      value = @cache.delete(key)
-      if value
+      has_key = true
+      value = @cache.delete(key) { has_key = false }
+      if has_key
         @cache[key] = value
       else
         miss(key, yield)
       end
     end
 
-    def set(key, value)
+    def store(key, value)
       @cache.delete(key)
       miss(key, value)
     end
 
     def lookup(key)
-      value = @cache.delete(key)
-      @cache[key] = value if value
+      has_key = true
+      value = @cache.delete(key) { has_key = false }
+      @cache[key] = value if has_key
+    end
+
+    def fetch(key)
+      has_key = true
+      value = @cache.delete(key) { has_key = false }
+      if has_key
+        @cache[key] = value
+      else
+        yield if block_given?
+      end
     end
 
     def inspect
@@ -46,12 +59,12 @@ module CacheLib
     end
 
     alias_method :[], :lookup
-    alias_method :[]=, :set
+    alias_method :[]=, :store
 
     protected
 
     def resize
-      @cache.delete(@cache.tail) while @cache.size > @limit
+      @cache.pop_tail while @cache.size > @limit
     end
 
     def hit(key)
@@ -61,7 +74,7 @@ module CacheLib
     def miss(key, value)
       @cache[key] = value
 
-      @cache.delete(@cache.tail) if @cache.size > @limit
+      @cache.pop_tail if @cache.size > @limit
 
       value
     end
