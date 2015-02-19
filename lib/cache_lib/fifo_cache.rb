@@ -13,6 +13,9 @@ module CacheLib
 
     def limit=(args)
       limit, _ = args
+
+      limit ||= @limit
+
       fail ArgumentError "Cache Limit must be 1 or greater: #{limit}" if
           limit.nil? || limit < 1
 

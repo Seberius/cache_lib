@@ -21,9 +21,10 @@ module CacheLib
     end
 
     def get(key)
-      value = hit(key)
+      has_key = true
+      value = @cache.fetch(key) { has_key = false }
 
-      if value
+      if has_key
         value
       else
         miss(key, yield)

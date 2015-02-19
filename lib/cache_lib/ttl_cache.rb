@@ -1,34 +1,36 @@
 module CacheLib
-  class LruCache < BasicCache
+  class TtlCache
     def initialize(*args)
-      limit, _ = args
+      limit, ttl = args
 
       fail ArgumentError "Cache Limit must be 1 or greater: #{limit}" if
           limit.nil? || limit < 1
 
       @limit = limit
+      @ttl = ttl
 
       @cache = UtilHash.new
+      @queue = UtilHash.new
     end
 
     def limit=(args)
-      limit, _ = args
+      limit, ttl = args
 
       limit ||= @limit
+      ttl ||= @ttl
 
       fail ArgumentError "Cache Limit must be 1 or greater: #{limit}" if
           limit.nil? || limit < 1
 
       @limit = limit
+      @ttl = ttl
 
       resize
     end
 
     def get(key)
-      has_key = true
-      value = @cache.delete(key) { has_key = false }
-      if has_key
-        @cache[key] = value
+      if hit?(key)
+        hit(key)
       else
         miss(key, yield)
       end
@@ -36,23 +38,25 @@ module CacheLib
 
     def store(key, value)
       @cache.delete(key)
+      @queue.delete(key)
       miss(key, value)
     end
 
     def lookup(key)
-      has_key = true
-      value = @cache.delete(key) { has_key = false }
-      @cache[key] = value if has_key
+      hit(key) if hit?(key)
     end
 
     def fetch(key)
-      has_key = true
-      value = @cache.delete(key) { has_key = false }
-      if has_key
-        @cache[key] = value
+      if hit?(key)
+        hit(key)
       else
         yield if block_given?
       end
+    end
+
+    def evict(key)
+      @cache.delete(key)
+      @queue.delete(key)
     end
 
     def inspect
@@ -65,8 +69,34 @@ module CacheLib
 
     protected
 
+    def ttl_evict
+      return if @ttl.nil?
+
+      ttl_horizon = Time.now - @ttl
+
+      @ttl.each do |key, time|
+        if time <= ttl_horizon
+          @cache.delete(key)
+          @queue.delete(key)
+        else
+          break
+        end
+      end
+    end
+
     def resize
-      @cache.pop_tail while @cache.size > @limit
+      ttl_evict
+
+      while @cache.size > @limit
+        @cache.delete(key)
+        @queue.delete(key)
+      end
+    end
+
+    def hit?(key)
+      ttl_evict
+
+      @cache.key?(key)
     end
 
     def hit(key)
@@ -75,8 +105,9 @@ module CacheLib
 
     def miss(key, value)
       @cache[key] = value
+      @queue[key] = Time.now
 
-      @cache.pop_tail if @cache.size > @limit
+      @cache.tail if @cache.size > @limit
 
       value
     end
