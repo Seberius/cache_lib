@@ -56,6 +56,12 @@ module CacheLib
       end
     end
 
+    def expire
+      synchronize do
+        super
+      end
+    end
+
     def each
       synchronize do
         super

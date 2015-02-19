@@ -117,36 +117,36 @@ module CacheLib
     protected
 
     def trim_stack
-      s_tail = @stack.tail
-      while @queue.key?(s_tail) || !@cache.key?(s_tail)
-        @stack.delete(s_tail)
-        s_tail = @stack.tail
+      key, _ = @stack.tail
+      while @queue.key?(key) || !@cache.key?(key)
+        @stack.delete(key)
+        key, _ = @stack.tail
       end
     end
 
     def promote_hir
-      key = @queue.head
+      key = @queue.head_key
 
       @stack.set_tail(key, nil) unless @stack.key?(key)
       @queue.delete(key)
     end
 
     def pop_tail
-      key = @queue.tail
+      key, _ = @queue.tail
 
       @queue.delete(key)
       @cache.delete(key)
     end
 
     def pop_stack
-      key = @stack.tail
+      key, _ = @stack.tail
 
       @cache.delete(key)
       trim_stack
     end
 
     def demote_lir
-      key = @stack.tail
+      key, _ = @stack.tail
 
       @stack.delete(key)
       @queue.set_head(key, nil)
@@ -176,7 +176,7 @@ module CacheLib
 
           demote_lir
         else
-          s_tail_key = @stack.tail
+          s_tail_key, _ = @stack.tail
           @stack.refresh(key)
 
           trim_stack if s_tail_key == key

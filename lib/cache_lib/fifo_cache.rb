@@ -35,7 +35,7 @@ module CacheLib
     protected
 
     def resize
-      @cache.delete(@cache.tail) while @cache.size > @limit
+      @cache.pop_tail while @cache.size > @limit
     end
 
     def miss(key, value)

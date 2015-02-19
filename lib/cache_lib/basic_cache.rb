@@ -59,6 +59,10 @@ module CacheLib
       nil
     end
 
+    def expire
+      nil
+    end
+
     def each
       @cache.each do |pair|
         yield pair

@@ -1,11 +1,11 @@
 module CacheLib
   class UtilHash < Hash
-    def head
+    def head_key
       keys.last
     end
 
     def tail
-      first[0]
+      first
     end
 
     def set_head(key, value)
@@ -18,7 +18,7 @@ module CacheLib
     end
 
     def pop_tail
-      delete(tail)
+      delete(first[0])
     end
 
     def refresh(key)

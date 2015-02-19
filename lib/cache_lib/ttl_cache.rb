@@ -1,5 +1,5 @@
 module CacheLib
-  class TtlCache
+  class TtlCache < BasicCache
     def initialize(*args)
       limit, ttl = args
 
@@ -55,8 +55,12 @@ module CacheLib
     end
 
     def evict(key)
-      @cache.delete(key)
       @queue.delete(key)
+      @cache.delete(key)
+    end
+
+    def expire
+      ttl_evict
     end
 
     def inspect
@@ -73,14 +77,13 @@ module CacheLib
       return if @ttl.nil?
 
       ttl_horizon = Time.now - @ttl
+      key, time = @queue.tail
 
-      @ttl.each do |key, time|
-        if time <= ttl_horizon
-          @cache.delete(key)
-          @queue.delete(key)
-        else
-          break
-        end
+      until time.nil? || time > ttl_horizon
+        @queue.delete(key)
+        @cache.delete(key)
+
+        key, time = @queue.tail
       end
     end
 
@@ -88,8 +91,10 @@ module CacheLib
       ttl_evict
 
       while @cache.size > @limit
-        @cache.delete(key)
+        key, _ = @cache.tail
+
         @queue.delete(key)
+        @cache.delete(key)
       end
     end
 
@@ -107,7 +112,12 @@ module CacheLib
       @cache[key] = value
       @queue[key] = Time.now
 
-      @cache.tail if @cache.size > @limit
+      while @cache.size > @limit
+        key, _ = @cache.tail
+
+        @queue.delete(key)
+        @cache.delete(key)
+      end
 
       value
     end
