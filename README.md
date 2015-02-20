@@ -1,8 +1,8 @@
 # CacheLib
-#### A Ruby caching library implementing Basic, FIFO, LRU and LIRS caches.
+#### A Ruby caching library implementing Basic, FIFO, LRU, TTL and LIRS caches.
 
 ##### CacheLib is young library and breaking api changes are still possible.  Please read the release notes before upgrading.
-CacheLib currently implements basic, FIFO, LRU and LIRS caches along with offering thread safe implementations of each.  Originally a LIRS cache feature fork of [LruRedux](https://github.com/SamSaffron/lru_redux), CacheLib was built to provide a clean base for implementing the LIRS cache in Ruby, along with offering user friendly api.
+CacheLib currently implements basic, FIFO, LRU and LIRS caches along with offering thread safe implementations of each.  Originally a LIRS cache feature fork of [LruRedux](https://github.com/SamSaffron/lru_redux), CacheLib was built to provide a clean base for implementing the LIRS cache in Ruby, along with offering a user friendly api.
 
 ##### Basic:
 The basic cache is the simplest cache available and forms the base for the others.  It does NOT have an eviction strategy and will store however much it is given.
@@ -12,6 +12,9 @@ The FIFO cache adds to the basic cache with a simple First In First Our eviction
 
 ##### LRU:
 The LRU cache further adds to the previous caches with a Least Recently Used eviction strategy.  The primary difference between FIFO and LRU is that LRU will refresh currently cached items if they are requested again.
+
+##### TTL:
+The TTL cache is an extension of the LRU cache, adding a TTL eviction strategy that takes precedence over LRU eviction.
 
 ##### LIRS:
 The LIRS cache implements the Low Inter-Reference Recency Set Replacement Policy developed by Song Jiang and Xiaodong Zhang.  Please reference the [original paper](http://citeseer.ist.psu.edu/viewdoc/summary?doi=10.1.1.116.2184) for more information.
@@ -33,6 +36,9 @@ cache = CacheLib.create :fifo, 100
 # LRU with a limit of 100
 cache = CacheLib.create :lru, 100
 
+# TTL with a limit of 100 and a ttl of 5 minutes.
+cache = CacheLib.create :ttl, 100, 5 * 60
+
 # LIRS with a cache limit of 100, made up of a S limit of 95 and a Q limit of 5.
 cache = CacheLib.create :lirs, 95, 5
 ```
@@ -42,7 +48,8 @@ cache = CacheLib.create :lirs, 95, 5
 # Cache methods remain the same across all variations
 cache = CacheLib.create :lru, 100
 
-# .get is the primary method for accessing the cache.  It requires a key and block that will generate the value that is stored if the key is not cached.
+# .get is the primary method for accessing the cache.
+# It requires a key and block that will generate the value that is stored if the key is not cached.
 cache.get(:a) { 'Apple' }
 # => 'Apple'
 cache.get(:b) { 'Beethoven' }
@@ -50,7 +57,8 @@ cache.get(:b) { 'Beethoven' }
 cache.get(:a) { 'Apricot' }
 # => 'Apple'
 
-# .store takes a key and value and implements the functionality of Hash#store. Will refresh the key in LRU and LIRS caches.
+# .store takes a key and value and implements the functionality of Hash#store.
+# Will refresh the key in LRU and LIRS caches.
 cache.store(:c, 'Chopin')
 # => 'Chopin'
 cache.store(:a, 'Mozart')
@@ -70,13 +78,15 @@ cache.lookup(:t)
 cache[:a]
 # => 'Mozart'
 
-# .fetch is similar to .lookup, but takes an optional block that will execute if the key is not cached.
+# .fetch is similar to .lookup,
+# but takes an optional block that will execute if the key is not cached.
 cache.fetch(:c)
 # => 'Chopin'
 cache.fetch(:r) { 21 * 2 }
 # => 42
 
-# .evict takes a key and will remove the key from the cache and return the associated value.  Returns nil is the key is not cached.
+# .evict takes a key and will remove the key from the cache and return the associated value.
+# Returns nil is the key is not cached.
 cache.evict(:d)
 # => 'Denmark'
 cache.evict(:r)
@@ -94,7 +104,9 @@ cache.key?(:a)
 cache.key?(:g)
 # => false
 
-# .to_a returns an array of arrays of key value pairs that are cached.  Basic, FIFO and LIRS are insertion ordered while LRU is recency ordered, starting with newest.
+# .to_a returns an array of arrays of key value pairs that are cached.
+# Basic, FIFO and LIRS are insertion ordered while LRU and TTL are recency ordered,
+# starting with the newest.
 cache.to_a
 # => [[:c, 'Chopin'], [:a, 'Mozart'], [:b, 'Beethoven']]
 
@@ -115,8 +127,10 @@ cache.clear
 # => nil
 ```
 
-## Copyright
+## Credits and Notices
+See [NOTICE.md](NOTICE.md) for details.
 
+## Copyright
 Copyright (c) 2015 Kaijah Hougham
 
 See [LICENSE.txt](LICENSE.txt) for details.

@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.name          = 'cache_lib'
   gem.version       = CacheLib::VERSION
   gem.summary       = 'A Ruby Caching Library'
-  gem.description   = 'A Ruby caching library implementing Basic, FIFO, LRU and LIRS caching strategies.'
+  gem.description   = 'A Ruby caching library implementing Basic, FIFO, LRU, TTL and LIRS caches.'
   gem.license       = 'MIT'
   gem.authors       = 'Kaijah Hougham'
   gem.email         = 'github@seberius.com'
