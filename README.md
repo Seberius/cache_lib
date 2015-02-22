@@ -17,7 +17,7 @@ The LRU cache further adds to the previous caches with a Least Recently Used evi
 The TTL cache is an extension of the LRU cache, adding a TTL eviction strategy that takes precedence over LRU eviction.
 
 ##### LIRS:
-The LIRS cache implements the Low Inter-Reference Recency Set Replacement Policy developed by Song Jiang and Xiaodong Zhang.  Please reference the [original paper](http://citeseer.ist.psu.edu/viewdoc/summary?doi=10.1.1.116.2184) for more information.
+The LIRS cache implements the Low Inter-Reference Recency Set eviction policy.  LIRS improves performance over LRU by taking into account the recency and reuse of an item in eviction selection. Please reference the [original paper](http://citeseer.ist.psu.edu/viewdoc/summary?doi=10.1.1.116.2184) for more information.
 
 ##### CacheLib is Ruby >= 1.9.3 only.
 If you are looking for a LRU cache that supports an earlier version or just want an alternative LRU cache, please take a look at [LruRedux](https://github.com/SamSaffron/lru_redux).
@@ -41,6 +41,9 @@ cache = CacheLib.create :ttl, 100, 5 * 60
 
 # LIRS with a cache limit of 100, made up of a S limit of 95 and a Q limit of 5.
 cache = CacheLib.create :lirs, 95, 5
+
+# Threadsafe versions of every cache can be made by using CacheLib.safe_create
+cache = CacheLib.safe_create :lirs, 95, 5
 ```
 
 ### Using the cache
@@ -49,7 +52,8 @@ cache = CacheLib.create :lirs, 95, 5
 cache = CacheLib.create :lru, 100
 
 # .get is the primary method for accessing the cache.
-# It requires a key and block that will generate the value that is stored if the key is not cached.
+# It requires a key and block that will generate the value that is stored
+# if the key is not cached.
 cache.get(:a) { 'Apple' }
 # => 'Apple'
 cache.get(:b) { 'Beethoven' }

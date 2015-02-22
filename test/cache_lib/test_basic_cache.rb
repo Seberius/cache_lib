@@ -1,5 +1,5 @@
 require 'cache_lib'
-require 'minitest/autorun'
+require 'minitest'
 
 class TestBasicCache < MiniTest::Test
   def setup

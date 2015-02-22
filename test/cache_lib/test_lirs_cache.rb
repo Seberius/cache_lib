@@ -1,6 +1,3 @@
-require 'cache_lib'
-require 'minitest/autorun'
-
 require_relative 'test_basic_cache'
 
 class TestLirsCache < TestBasicCache
@@ -23,7 +20,7 @@ class TestLirsCache < TestBasicCache
     @cache.store(:b, 2)
 
     assert_equal "#{@cache.class}, Limit: 5, Stack Limit: 3, "\
-                 'Queue Limit: 2 Size: 2',
+                 'Queue Limit: 2, Size: 2',
                  @cache.inspect
   end
 

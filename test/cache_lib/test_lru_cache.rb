@@ -1,6 +1,3 @@
-require 'cache_lib'
-require 'minitest/autorun'
-
 require_relative 'test_basic_cache'
 
 class TestLruCache < TestBasicCache

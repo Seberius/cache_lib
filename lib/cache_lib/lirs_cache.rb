@@ -109,7 +109,7 @@ module CacheLib
       "#{self.class}, "\
       "Limit: #{@limit}, "\
       "Stack Limit: #{@s_limit}, "\
-      "Queue Limit: #{@q_limit} "\
+      "Queue Limit: #{@q_limit}, "\
       "Size: #{@cache.size}"
     end
 

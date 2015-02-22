@@ -1,9 +1,6 @@
-require 'cache_lib'
-require 'minitest/autorun'
+require_relative 'test_basic_cache'
 
-require_relative 'test_lru_cache'
-
-class TestTtlCache < TestLruCache
+class TestTtlCache < TestBasicCache
   def setup
     @cache = CacheLib.create :ttl, 5, 60 * 60
   end
