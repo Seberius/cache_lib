@@ -15,6 +15,15 @@ module CacheLib
       @queue = UtilHash.new
     end
 
+    def initialize_copy(source)
+      source_raw = source.raw
+
+      @limit = source_raw[:limit]
+
+      @cache = source_raw[:cache]
+      @queue = source_raw[:queue]
+    end
+
     def limit=(args)
       limit, ttl = args
 
@@ -41,8 +50,11 @@ module CacheLib
     end
 
     def store(key, value)
+      ttl_evict
+
       @cache.delete(key)
       @queue.delete(key)
+
       miss(key, value)
     end
 
@@ -65,6 +77,12 @@ module CacheLib
 
     def expire
       ttl_evict
+    end
+
+    def raw
+      { limit: @limit,
+        cache: @cache.clone,
+        queue: @queue.clone }
     end
 
     def inspect
