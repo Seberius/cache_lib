@@ -3,9 +3,9 @@ module CacheLib
     def initialize(*args)
       s_limit, q_limit = args
 
-      fail ArgumentError 'S Limit must be 1 or greater.' if
+      fail ArgumentError, 'S Limit must be 1 or greater.' if
           s_limit.nil? || s_limit < 1
-      fail ArgumentError 'Q Limit must be 1 or greater.' if
+      fail ArgumentError, 'Q Limit must be 1 or greater.' if
           q_limit.nil? || q_limit < 1
 
       @s_limit = s_limit
@@ -32,9 +32,9 @@ module CacheLib
     def limit=(args)
       s_limit, q_limit = args
 
-      fail ArgumentError 'S Limit must be 1 or greater.' if
+      fail ArgumentError, 'S Limit must be 1 or greater.' if
           s_limit.nil? || s_limit < 1
-      fail ArgumentError 'Q Limit must be 1 or greater.' if
+      fail ArgumentError, 'Q Limit must be 1 or greater.' if
           q_limit.nil? || q_limit < 1
 
       @s_limit = s_limit
@@ -156,11 +156,7 @@ module CacheLib
     end
 
     def resize
-      s_size = 0
-
-      @stack.each do |key, _|
-        s_size += 1 if @cache.key?(key) && !@queue.key?(key)
-      end
+      s_size = @stack.count { |key, _| @cache.key?(key) && !@queue.key?(key) }
 
       promote_hir while (s_size < @s_limit && @queue.size > 0) && s_size += 1
       pop_tail while @queue.size > 0 && @cache.size > @limit

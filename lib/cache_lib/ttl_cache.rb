@@ -3,10 +3,10 @@ module CacheLib
     def initialize(*args)
       limit, ttl = args
 
-      fail ArgumentError "Cache Limit must be 1 or greater: #{limit}" if
+      fail ArgumentError, "Cache Limit must be 1 or greater: #{limit}" if
           limit.nil? || limit < 1
-      fail ArgumentError "TTL must be :none, 0 or greater: #{limit}" unless
-          limit == :none || limit >= 0
+      fail ArgumentError, "TTL must be :none, 0 or greater: #{ttl}" unless
+          ttl == :none || ((ttl.is_a? Numeric) && ttl >= 0)
 
       @limit = limit
       @ttl = ttl
@@ -21,10 +21,10 @@ module CacheLib
       limit ||= @limit
       ttl ||= @ttl
 
-      fail ArgumentError "Cache Limit must be 1 or greater: #{limit}" if
+      fail ArgumentError, "Cache Limit must be 1 or greater: #{limit}" if
           limit.nil? || limit < 1
-      fail ArgumentError "TTL must be :none, 0 or greater: #{limit}" unless
-          ttl == :none || ttl >= 0
+      fail ArgumentError, "TTL must be :none, 0 or greater: #{ttl}" unless
+          ttl == :none || ((ttl.is_a? Numeric) && ttl >= 0)
 
       @limit = limit
       @ttl = ttl

@@ -3,7 +3,7 @@ module CacheLib
     def initialize(*args)
       limit, _ = args
 
-      fail ArgumentError "Cache Limit must be 1 or greater: #{limit}" if
+      fail ArgumentError, "Cache Limit must be 1 or greater: #{limit}" if
           limit.nil? || limit < 1
 
       @limit = limit
@@ -16,7 +16,7 @@ module CacheLib
 
       limit ||= @limit
 
-      fail ArgumentError "Cache Limit must be 1 or greater: #{limit}" if
+      fail ArgumentError, "Cache Limit must be 1 or greater: #{limit}" if
           limit.nil? || limit < 1
 
       @limit = limit
