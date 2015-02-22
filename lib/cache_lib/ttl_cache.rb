@@ -5,6 +5,8 @@ module CacheLib
 
       fail ArgumentError "Cache Limit must be 1 or greater: #{limit}" if
           limit.nil? || limit < 1
+      fail ArgumentError "TTL must be :none, 0 or greater: #{limit}" unless
+          limit == :none || limit >= 0
 
       @limit = limit
       @ttl = ttl
@@ -21,6 +23,8 @@ module CacheLib
 
       fail ArgumentError "Cache Limit must be 1 or greater: #{limit}" if
           limit.nil? || limit < 1
+      fail ArgumentError "TTL must be :none, 0 or greater: #{limit}" unless
+          ttl == :none || ttl >= 0
 
       @limit = limit
       @ttl = ttl
@@ -64,8 +68,10 @@ module CacheLib
     end
 
     def inspect
-      "#{self.class} with a limit of #{@limit} "\
-      "currently caching #{@cache.size} items."
+      "#{self.class}, "\
+      "Limit: #{@limit}, "\
+      "TTL: #{@ttl}, "\
+      "Size: #{@cache.size}"
     end
 
     alias_method :[], :lookup
@@ -74,7 +80,7 @@ module CacheLib
     protected
 
     def ttl_evict
-      return if @ttl.nil?
+      return if @ttl == :none
 
       ttl_horizon = Time.now - @ttl
       key, time = @queue.tail

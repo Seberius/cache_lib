@@ -125,7 +125,7 @@ class TestBasicCache < MiniTest::Test
     @cache.store(:a, 1)
     @cache.store(:b, 2)
 
-    assert_equal "#{@cache.class} currently caching 2 items.",
+    assert_equal "#{@cache.class}, Limit: , Size: 2",
                  @cache.inspect
   end
 end

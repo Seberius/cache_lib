@@ -106,9 +106,11 @@ module CacheLib
     end
 
     def inspect
-      "#{self.class} with a limit of #{@limit}, "\
-      "s_limit of #{@s_limit} and q_limit of #{@q_limit} "\
-      "currently caching #{@cache.size} items."
+      "#{self.class}, "\
+      "Limit: #{@limit}, "\
+      "Stack Limit: #{@s_limit}, "\
+      "Queue Limit: #{@q_limit} "\
+      "Size: #{@cache.size}"
     end
 
     alias_method :[], :lookup

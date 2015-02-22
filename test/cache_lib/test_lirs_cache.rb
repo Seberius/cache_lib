@@ -22,9 +22,8 @@ class TestLirsCache < TestBasicCache
     @cache.store(:a, 1)
     @cache.store(:b, 2)
 
-    assert_equal "#{@cache.class} with a limit of 5, "\
-                 "s_limit of 3 and q_limit of 2 "\
-                 "currently caching 2 items.",
+    assert_equal "#{@cache.class}, Limit: 5, Stack Limit: 3, "\
+                 'Queue Limit: 2 Size: 2',
                  @cache.inspect
   end
 

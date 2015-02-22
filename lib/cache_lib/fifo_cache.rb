@@ -24,11 +24,6 @@ module CacheLib
       resize
     end
 
-    def inspect
-      "#{self.class} with a limit of #{@limit} "\
-      "currently caching #{@cache.size} items."
-    end
-
     alias_method :[], :lookup
     alias_method :[]=, :store
 
