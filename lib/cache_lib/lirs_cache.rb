@@ -115,12 +115,13 @@ module CacheLib
 
     alias_method :[], :lookup
     alias_method :[]=, :store
+    alias_method :delete, :evict
 
     protected
 
     def trim_stack
       key, _ = @stack.tail
-      while @queue.key?(key) || !@cache.key?(key)
+      while key && (@queue.key?(key) || !@cache.key?(key))
         @stack.delete(key)
         key, _ = @stack.tail
       end

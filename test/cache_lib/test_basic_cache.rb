@@ -63,6 +63,11 @@ class TestBasicCache < MiniTest::Test
     assert_equal nil, @cache.evict(:z)
 
     assert_equal nil, @cache.lookup(:a)
+
+    assert_equal 2, @cache.delete(:b)
+    assert_equal nil, @cache.delete(:z)
+
+    assert_equal nil, @cache.lookup(:b)
   end
 
   def test_clear
