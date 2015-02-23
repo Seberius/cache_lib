@@ -96,6 +96,10 @@ cache.evict(:d)
 cache.evict(:r)
 # => nil
 
+# .delete is equivalent to .evict
+cache.delete(:x)
+# => nil
+
 # .each takes each key value pair and applies the given block to them.
 cache.each { |_, value| puts value }
 # => 'Chopin'
@@ -126,9 +130,38 @@ cache.values
 cache.size
 # => 3
 
+# .limit returns the current cache limit.
+cache.limit
+# => 100
+
+# The limit can be changed with .limit=.
+cache.limit = 125
+# => 125
+
 # .clear removes all items from the cache.
 cache.clear
 # => nil
+
+# The LIRS and TTL caches have additional options for .limit=.
+lirs = CacheLib.create :lirs, 95, 5
+ttl = CacheLib.create :ttl, 100, 5 * 60
+
+# LIRS require both the Stack limit and Queue limit be given,
+# and their sum is the cache limit.
+lirs.limit = 120, 5
+# => [120, 5]
+lirs.limit
+# => 125
+
+# TTL can have a new limit and ttl set at the same time.
+ttl.limit = 125, 10 * 60
+# => [125, 600]
+
+# Or just the limit
+ttl.limit = 150
+
+# Or just the ttl
+ttl.limit = nil, 6 * 60
 ```
 
 ## Credits and Notices
