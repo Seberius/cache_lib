@@ -12,25 +12,27 @@ require_relative 'cache_lib/safe_lirs_cache'
 require_relative 'cache_lib/version'
 
 module CacheLib
+  CACHES = { basic: BasicCache, fifo: FifoCache,
+             lru: LruCache, ttl: TtlCache,
+             lirs:LirsCache }
+
+  SAFE_CACHES = { basic: SafeBasicCache, fifo: SafeFifoCache,
+                  lru: SafeLruCache, ttl: SafeTtlCache,
+                  lirs: SafeLirsCache }
+
   def self.create(type, *args)
-    case type
-    when :basic then BasicCache.new(*args)
-    when :fifo then FifoCache.new(*args)
-    when :lru then LruCache.new(*args)
-    when :ttl then TtlCache.new(*args)
-    when :lirs then LirsCache.new(*args)
-    else fail ArgumentError "Cache type not recognized: #{type}"
-    end
+    cache = CACHES[type]
+
+    fail ArgumentError "Cache type not recognized: #{type}" if cache.nil?
+
+    cache.new(*args)
   end
 
   def self.safe_create(type, *args)
-    case type
-    when :basic then SafeBasicCache.new(*args)
-    when :fifo then SafeFifoCache.new(*args)
-    when :lru then SafeLruCache.new(*args)
-    when :ttl then SafeTtlCache.new(*args)
-    when :lirs then SafeLirsCache.new(*args)
-    else fail ArgumentError "Cache type not recognized: #{type}"
-    end
+    cache = SAFE_CACHES[type]
+
+    fail ArgumentError "Cache type not recognized: #{type}" if cache.nil?
+
+    cache.new(*args)
   end
 end

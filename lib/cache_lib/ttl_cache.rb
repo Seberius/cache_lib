@@ -75,6 +75,11 @@ module CacheLib
       @cache.delete(key)
     end
 
+    def clear
+      @cache.clear
+      @queue.clear
+    end
+
     def expire
       ttl_evict
     end
@@ -137,7 +142,7 @@ module CacheLib
       @cache[key] = value
       @queue[key] = Time.now
 
-      while @cache.size > @limit
+      if @cache.size > @limit
         key, _ = @cache.tail
 
         @queue.delete(key)
