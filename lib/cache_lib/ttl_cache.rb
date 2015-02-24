@@ -78,6 +78,7 @@ module CacheLib
     def clear
       @cache.clear
       @queue.clear
+      nil
     end
 
     def expire
