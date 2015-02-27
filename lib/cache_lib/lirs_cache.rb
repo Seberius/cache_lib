@@ -8,9 +8,9 @@ module CacheLib
       fail ArgumentError, 'Q Limit must be 1 or greater.' if
           q_limit.nil? || q_limit < 1
 
+      @limit = s_limit + q_limit
       @s_limit = s_limit
       @q_limit = q_limit
-      @limit = s_limit + q_limit
 
       @cache = UtilHash.new
       @stack = UtilHash.new
@@ -145,6 +145,7 @@ module CacheLib
       key, _ = @stack.tail
 
       @cache.delete(key)
+
       trim_stack
     end
 
@@ -153,6 +154,7 @@ module CacheLib
 
       @stack.delete(key)
       @queue.set_head(key, nil)
+
       trim_stack
     end
 
