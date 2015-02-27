@@ -1,5 +1,8 @@
 require 'cache_lib'
 require 'minitest'
+require 'coveralls'
+
+Coveralls.wear!
 
 class TestBasicCache < MiniTest::Test
   def setup
@@ -14,6 +17,16 @@ class TestBasicCache < MiniTest::Test
     @cache.limit = 90
 
     assert_equal nil, @cache.limit
+  end
+
+  def test_ttl
+    assert_equal nil, @cache.ttl
+  end
+
+  def test_set_ttl
+    @cache.ttl = 10 * 60
+
+    assert_equal nil, @cache.ttl
   end
 
   def test_get
@@ -123,7 +136,7 @@ class TestBasicCache < MiniTest::Test
     @cache.store(:b, 2)
 
     assert_equal({ a: 1, b: 2 }, @cache.raw[:cache])
-    assert_equal CacheLib::UtilHash, @cache.raw[:cache].class
+    assert_equal CacheLib::Util::ExtHash, @cache.raw[:cache].class
   end
 
   def test_inspect

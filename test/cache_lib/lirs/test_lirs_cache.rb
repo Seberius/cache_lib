@@ -1,4 +1,4 @@
-require_relative 'test_basic_cache'
+require_relative '../basic/test_basic_cache'
 
 class TestLirsCache < TestBasicCache
   def setup
@@ -34,9 +34,9 @@ class TestLirsCache < TestBasicCache
     assert_equal({ a: nil, b: nil }, raw_cache[:stack])
     assert_equal({}, raw_cache[:queue])
 
-    assert_equal CacheLib::UtilHash, raw_cache[:cache].class
-    assert_equal CacheLib::UtilHash, raw_cache[:stack].class
-    assert_equal CacheLib::UtilHash, raw_cache[:queue].class
+    assert_equal CacheLib::Util::ExtHash, raw_cache[:cache].class
+    assert_equal CacheLib::Util::ExtHash, raw_cache[:stack].class
+    assert_equal CacheLib::Util::ExtHash, raw_cache[:queue].class
   end
 
   def test_lirs_promotion

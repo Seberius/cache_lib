@@ -1,4 +1,4 @@
-require_relative 'test_basic_cache'
+require_relative '../basic/test_basic_cache'
 
 class TestLruCache < TestBasicCache
   def setup

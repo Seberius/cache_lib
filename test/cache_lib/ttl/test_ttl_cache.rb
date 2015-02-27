@@ -1,6 +1,6 @@
 require 'timecop'
 
-require_relative 'test_basic_cache'
+require_relative '../basic/test_basic_cache'
 
 class TestTtlCache < TestBasicCache
   def setup
@@ -20,6 +20,26 @@ class TestTtlCache < TestBasicCache
     @cache.limit = 90
 
     assert_equal 90, @cache.limit
+  end
+
+  def test_ttl
+    assert_equal 300, @cache.ttl
+  end
+
+  def test_set_ttl
+    @cache.ttl = 10 * 60
+
+    assert_equal 600, @cache.ttl
+  end
+
+  def test_raw
+    @cache.store(:a, 1)
+    @cache.store(:b, 2)
+
+    assert_equal({ a: 1, b: 2 }, @cache.raw[:cache])
+    assert_equal({ a: Time.now, b: Time.now }, @cache.raw[:queue])
+    assert_equal CacheLib::Util::ExtHash, @cache.raw[:cache].class
+    assert_equal CacheLib::Util::ExtHash, @cache.raw[:queue].class
   end
 
   def test_inspect
@@ -78,7 +98,7 @@ class TestTtlCache < TestBasicCache
 
     @cache.store(:c, 3)
 
-    assert_equal({ :c => 3 }, @cache.raw[:cache])
+    assert_equal({ c: 3 }, @cache.raw[:cache])
   end
 
   def test_ttl_eviction_on_expire
@@ -111,7 +131,7 @@ class TestTtlCache < TestBasicCache
 
     @cache.limit = nil, 10 * 60
 
-    assert_equal({ :a => 1, :b => 2 }, @cache.raw[:cache])
+    assert_equal({ a: 1, b: 2 }, @cache.raw[:cache])
 
     @cache.limit = nil, 2 * 60
 

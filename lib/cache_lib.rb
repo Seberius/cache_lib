@@ -1,24 +1,22 @@
-require_relative 'cache_lib/util_hash'
-require_relative 'cache_lib/basic_cache'
-require_relative 'cache_lib/fifo_cache'
-require_relative 'cache_lib/lru_cache'
-require_relative 'cache_lib/ttl_cache'
-require_relative 'cache_lib/lirs_cache'
-require_relative 'cache_lib/safe_basic_cache'
-require_relative 'cache_lib/safe_fifo_cache'
-require_relative 'cache_lib/safe_lru_cache'
-require_relative 'cache_lib/safe_ttl_cache'
-require_relative 'cache_lib/safe_lirs_cache'
+require_relative 'cache_lib/basic'
+require_relative 'cache_lib/fifo'
+require_relative 'cache_lib/lru'
+require_relative 'cache_lib/ttl'
+require_relative 'cache_lib/lirs'
 require_relative 'cache_lib/version'
 
 module CacheLib
-  CACHES = { basic: BasicCache, fifo: FifoCache,
-             lru: LruCache, ttl: TtlCache,
-             lirs: LirsCache }
+  CACHES = { basic: Basic::Cache,
+             fifo:  FIFO::Cache,
+             lru:   LRU::Cache,
+             ttl:   TTL::Cache,
+             lirs:  LIRS::Cache }
 
-  SAFE_CACHES = { basic: SafeBasicCache, fifo: SafeFifoCache,
-                  lru: SafeLruCache, ttl: SafeTtlCache,
-                  lirs: SafeLirsCache }
+  SAFE_CACHES = { basic: Basic::SafeCache,
+                  fifo:  FIFO::SafeCache,
+                  lru:   LRU::SafeCache,
+                  ttl:   TTL::SafeCache,
+                  lirs:  LIRS::SafeCache }
 
   def self.create(type, *args)
     self.cache_new(type, CACHES, *args)
@@ -31,7 +29,8 @@ module CacheLib
   protected
 
   def self.cache_new(type, caches, *args)
-    fail ArgumentError "Cache type not recognized: #{type}" unless caches.key?(type)
+    fail ArgumentError "Cache type not recognized: #{type}" unless
+        caches.key?(type)
 
     caches[type].new(*args)
   end

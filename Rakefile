@@ -1,8 +1,10 @@
 require 'bundler/gem_tasks'
 require 'rake/testtask'
 
-Rake::TestTask.new do |t|
-  t.libs << 'test'
-  t.test_files = FileList['test/cache_lib/test*.rb']
-  t.verbose = true
+Rake::TestTask.new(:test) do |test|
+  test.libs << 'test'
+  test.test_files = FileList['test/**/test*.rb']
+  test.verbose = true
 end
+
+task :default => :test
