@@ -1,6 +1,11 @@
 # CacheLib
 #### A Ruby caching library implementing Basic, FIFO, LRU, TTL and LIRS caches.
 
+[![Gem Version](https://badge.fury.io/rb/cache_lib.svg)](http://badge.fury.io/rb/cache_lib)
+[![Build Status](https://travis-ci.org/Seberius/cache_lib.svg?branch=master)](https://travis-ci.org/Seberius/cache_lib)
+[![Dependency Status](https://gemnasium.com/seberius/cache_lib.png)](https://gemnasium.com/seberius/cache_lib)
+[![Code Climate](https://codeclimate.com/github/Seberius/cache_lib/badges/gpa.svg)](https://codeclimate.com/github/Seberius/cache_lib)
+
 ##### CacheLib is young library and breaking api changes are still possible.  Please read the release notes before upgrading.
 CacheLib currently implements basic, FIFO, LRU and LIRS caches along with offering thread safe implementations of each.  Originally a LIRS cache feature fork of [LruRedux](https://github.com/SamSaffron/lru_redux), CacheLib was built to provide a clean base for implementing the LIRS cache in Ruby, along with offering a user friendly api.
 
