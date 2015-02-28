@@ -5,3 +5,12 @@ rvm:
   - 2.0
   - 2.1
   - 2.2
+  - rbx-2
+  - jruby
+  - ruby-head
+  - jruby-head
+
+addons:
+  code_climate:
+    repo_token:
+      secure: GkZRpKpf6hYEaWFf4NvB7OgbF3obhbDvzzbLY5AVutccgF4ifk2cVLyzqqRwmYiwAlVze08JePddFZxQppcDo4AuuMDU8+SDt16jr20GAI4S/+FrV8J6p7suXEQNvQxuZONFDQpi/K9jAHlJgzEVYLhWT72v2JH9fghnfVcv13w=

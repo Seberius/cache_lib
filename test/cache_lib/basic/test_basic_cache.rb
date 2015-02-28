@@ -1,8 +1,8 @@
 require 'cache_lib'
 require 'minitest'
-require 'coveralls'
+require 'codeclimate-test-reporter'
 
-Coveralls.wear!
+CodeClimate::TestReporter.start
 
 class TestBasicCache < MiniTest::Test
   def setup
