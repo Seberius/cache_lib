@@ -33,17 +33,9 @@ module CacheLib
         end
       end
 
-      if RUBY_PLATFORM == 'java' && JRUBY_VERSION < '9.0'
-        def get(key, &block)
-          synchronize do
-            super(key, &block)
-          end
-        end
-      else
-        def get(key)
-          synchronize do
-            super(key)
-          end
+      def get(key)
+        synchronize do
+          super(key)
         end
       end
 
@@ -59,17 +51,9 @@ module CacheLib
         end
       end
 
-      if RUBY_PLATFORM == 'java' && JRUBY_VERSION < '9.0'
-        def fetch(key, &block)
-          synchronize do
-            super(key, &block)
-          end
-        end
-      else
-        def fetch(key)
-          synchronize do
-            super(key)
-          end
+      def fetch(key)
+        synchronize do
+          super(key)
         end
       end
 
