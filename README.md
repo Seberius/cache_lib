@@ -3,7 +3,7 @@
 
 [![Gem Version](https://badge.fury.io/rb/cache_lib.svg)](http://badge.fury.io/rb/cache_lib)
 [![Build Status](https://travis-ci.org/Seberius/cache_lib.svg?branch=master)](https://travis-ci.org/Seberius/cache_lib)
-[![Dependency Status](https://gemnasium.com/seberius/cache_lib.png)](https://gemnasium.com/seberius/cache_lib)
+[![Dependency Status](https://gemnasium.com/Seberius/cache_lib.svg)](https://gemnasium.com/Seberius/cache_lib)
 [![Code Climate](https://codeclimate.com/github/Seberius/cache_lib/badges/gpa.svg)](https://codeclimate.com/github/Seberius/cache_lib)
 
 ##### CacheLib is young library and breaking api changes are still possible.  Please read the release notes before upgrading.
