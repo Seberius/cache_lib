@@ -111,6 +111,8 @@ module CacheLib
       alias_method :[], :lookup
       alias_method :[]=, :store
       alias_method :delete, :evict
+      alias_method :has_key?, :key?
+      alias_method :length, :size
 
       protected
 

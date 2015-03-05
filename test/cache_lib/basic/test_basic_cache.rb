@@ -1,8 +1,9 @@
-require 'cache_lib'
-require 'minitest'
 require 'codeclimate-test-reporter'
 
 CodeClimate::TestReporter.start
+
+require 'cache_lib'
+require 'minitest'
 
 class TestBasicCache < MiniTest::Test
   def setup
@@ -98,6 +99,8 @@ class TestBasicCache < MiniTest::Test
 
     assert_equal true, @cache.key?(:a)
     assert_equal false, @cache.key?(:z)
+    assert_equal true, @cache.has_key?(:a)
+    assert_equal false, @cache.has_key?(:z)
   end
 
   def test_to_a
@@ -125,10 +128,12 @@ class TestBasicCache < MiniTest::Test
     @cache.store(:a, 1)
 
     assert_equal 1, @cache.size
+    assert_equal 1, @cache.length
 
     @cache.store(:b, 2)
 
     assert_equal 2, @cache.size
+    assert_equal 2, @cache.length
   end
 
   def test_raw

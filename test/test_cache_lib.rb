@@ -1,8 +1,9 @@
-require 'cache_lib'
-require 'minitest'
 require 'codeclimate-test-reporter'
 
 CodeClimate::TestReporter.start
+
+require 'cache_lib'
+require 'minitest'
 
 class TestCacheLib < MiniTest::Test
   def test_create
