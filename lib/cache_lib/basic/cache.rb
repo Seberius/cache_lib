@@ -116,10 +116,6 @@ module CacheLib
 
       protected
 
-      def hit(key)
-        @cache[key]
-      end
-
       def miss(key, value)
         @cache[key] = value
       end

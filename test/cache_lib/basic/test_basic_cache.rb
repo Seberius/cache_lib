@@ -88,10 +88,20 @@ class TestBasicCache < MiniTest::Test
     @cache.store(:a, 1)
     @cache.store(:b, 2)
 
-    assert_equal(nil, @cache.clear)
+    assert_equal nil, @cache.clear
 
     assert_equal nil, @cache.lookup(:a)
     assert_equal nil, @cache.lookup(:b)
+  end
+
+  def test_each
+    @cache.store(:a, 1)
+    @cache.store(:b, 2)
+    an_array = []
+
+    assert_equal({ a: 1, b: 2 },
+                @cache.each { |key, value| an_array << [key, value + 1] })
+    assert_equal [[:a, 2], [:b, 3]], an_array
   end
 
   def test_key?
@@ -150,5 +160,20 @@ class TestBasicCache < MiniTest::Test
 
     assert_equal "#{@cache.class}, Limit: , Size: 2",
                  @cache.inspect
+  end
+
+  def test_clone
+    @cache.store(:a, 1)
+    @cache.store(:b, 2)
+
+    clone = @cache.clone
+
+    assert_equal @cache.size, clone.size
+    assert_equal @cache.lookup(:a), @cache.lookup(:a)
+    assert_equal @cache.inspect, clone.inspect
+
+    clone.evict(:a)
+
+    assert_equal true, @cache.key?(:a)
   end
 end
