@@ -12,6 +12,12 @@ module CacheLib
           super(key, &block)
         end
       end
+
+      def count(*pair, &block)
+        synchronize do
+          super(*pair, &block)
+        end
+      end
     end
   end
 end

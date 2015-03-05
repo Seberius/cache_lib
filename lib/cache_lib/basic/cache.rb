@@ -96,6 +96,10 @@ module CacheLib
         @cache.size
       end
 
+      def count(*pair, &block)
+        @cache.count(*pair, &block)
+      end
+
       def raw
         { limit: @limit,
           ttl: @ttl,
@@ -104,8 +108,8 @@ module CacheLib
 
       def inspect
         "#{self.class}, "\
-      "Limit: #{@limit}, "\
-      "Size: #{@cache.size}"
+        "Limit: #{@limit}, "\
+        "Size: #{@cache.size}"
       end
 
       alias_method :[], :lookup

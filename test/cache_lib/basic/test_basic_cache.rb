@@ -146,6 +146,15 @@ class TestBasicCache < MiniTest::Test
     assert_equal 2, @cache.length
   end
 
+  def test_count
+    @cache.store(:a, 1)
+    @cache.store(:b, 2)
+
+    assert_equal 2, @cache.count
+    assert_equal 1, @cache.count([:a, 1])
+    assert_equal 1, @cache.count { |_, value| value % 2 == 0 }
+  end
+
   def test_raw
     @cache.store(:a, 1)
     @cache.store(:b, 2)

@@ -99,6 +99,12 @@ module CacheLib
         end
       end
 
+      def count(*pair)
+        synchronize do
+          super(*pair)
+        end
+      end
+
       def raw
         synchronize do
           super

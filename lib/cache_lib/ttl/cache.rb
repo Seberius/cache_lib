@@ -107,9 +107,9 @@ module CacheLib
 
       def inspect
         "#{self.class}, "\
-      "Limit: #{@limit}, "\
-      "TTL: #{@ttl}, "\
-      "Size: #{@cache.size}"
+        "Limit: #{@limit}, "\
+        "TTL: #{@ttl}, "\
+        "Size: #{@cache.size}"
       end
 
       alias_method :[], :lookup
