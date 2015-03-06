@@ -15,6 +15,79 @@ class TestLirsCache < TestBasicCache
     assert_equal 100, @cache.limit
   end
 
+  def test_store_ext
+    @cache.store(:a, 1)
+    @cache.store(:b, 2)
+    @cache.store(:c, 3)
+    @cache.store(:d, 4)
+    @cache.store(:e, 5)
+    @cache.store(:f, 6)
+
+    raw_cache = @cache.raw
+
+    assert_equal({a: 1, b: 2, c: 3, e: 5, f: 6},
+                 raw_cache[:cache])
+    assert_equal({a: nil, b: nil, c: nil, d: nil, e: nil, f: nil},
+                 raw_cache[:stack])
+    assert_equal({e: nil, f: nil}, raw_cache[:queue])
+
+    @cache.store(:d, 4)
+    raw_cache = @cache.raw
+
+    assert_equal({a: 1, b: 2, c: 3, f: 6, d: 4},
+                 raw_cache[:cache])
+    assert_equal({b: nil, c: nil, e: nil, f: nil, d: nil},
+                 raw_cache[:stack])
+    assert_equal({f: nil, a: nil}, raw_cache[:queue])
+  end
+
+  def test_evict_ext
+    @cache.store(:a, 1)
+    @cache.store(:b, 2)
+    @cache.store(:c, 3)
+    @cache.store(:d, 4)
+    @cache.store(:e, 5)
+    @cache.lookup(:a)
+    @cache.store(:f, 6)
+    @cache.lookup(:e)
+    @cache.store(:g, 7)
+
+    raw_cache = @cache.raw
+
+    assert_equal({a: 1, b: 2, c: 3, e: 5, g: 7},
+                 raw_cache[:cache])
+    assert_equal({c: nil, d: nil, a: nil, f: nil, e: nil, g: nil},
+                 raw_cache[:stack])
+    assert_equal({b: nil, g: nil}, raw_cache[:queue])
+
+    @cache.evict(:e)
+    raw_cache = @cache.raw
+
+    assert_equal({a: 1, b: 2, c: 3, g: 7},
+                 raw_cache[:cache])
+    assert_equal({c: nil, d: nil, a: nil, f: nil, e: nil, g: nil},
+                 raw_cache[:stack])
+    assert_equal({b: nil}, raw_cache[:queue])
+
+    @cache.evict(:c)
+    raw_cache = @cache.raw
+
+    assert_equal({a: 1, b: 2, g: 7},
+                 raw_cache[:cache])
+    assert_equal({b: nil, c: nil, d: nil, a: nil, f: nil, e: nil, g: nil},
+                 raw_cache[:stack])
+    assert_equal({}, raw_cache[:queue])
+
+    @cache.evict(:b)
+    raw_cache = @cache.raw
+
+    assert_equal({a: 1, g: 7},
+                 raw_cache[:cache])
+    assert_equal({a: nil, f: nil, e: nil, g: nil},
+                 raw_cache[:stack])
+    assert_equal({}, raw_cache[:queue])
+  end
+
   def test_inspect
     @cache.store(:a, 1)
     @cache.store(:b, 2)
@@ -89,14 +162,14 @@ class TestLirsCache < TestBasicCache
 
   def test_downsize
     (1..5).each { |i| @cache.store(i, i) }
-    @cache.limit = 2, 1
+    @cache.limit = 1, 1
 
     raw_cache = @cache.raw
 
-    assert_equal 3, @cache.size
-    assert_equal({ 1 => 1, 2 => 2, 3 => 3 }, raw_cache[:cache])
-    assert_equal({ 2 => nil, 3 => nil, 4 => nil, 5 => nil },
+    assert_equal 2, @cache.size
+    assert_equal({ 2 => 2, 3 => 3 }, raw_cache[:cache])
+    assert_equal({ 3 => nil, 4 => nil, 5 => nil },
                  raw_cache[:stack])
-    assert_equal({ 1 => nil }, raw_cache[:queue])
+    assert_equal({ 2 => nil }, raw_cache[:queue])
   end
 end
