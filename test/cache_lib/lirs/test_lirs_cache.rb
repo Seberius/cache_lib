@@ -32,6 +32,7 @@ class TestLirsCache < TestBasicCache
     assert_equal({e: nil, f: nil}, raw_cache[:queue])
 
     @cache.store(:d, 4)
+
     raw_cache = @cache.raw
 
     assert_equal({a: 1, b: 2, c: 3, f: 6, d: 4},
@@ -61,6 +62,7 @@ class TestLirsCache < TestBasicCache
     assert_equal({b: nil, g: nil}, raw_cache[:queue])
 
     @cache.evict(:e)
+
     raw_cache = @cache.raw
 
     assert_equal({a: 1, b: 2, c: 3, g: 7},
@@ -70,6 +72,7 @@ class TestLirsCache < TestBasicCache
     assert_equal({b: nil}, raw_cache[:queue])
 
     @cache.evict(:c)
+
     raw_cache = @cache.raw
 
     assert_equal({a: 1, b: 2, g: 7},
@@ -79,11 +82,24 @@ class TestLirsCache < TestBasicCache
     assert_equal({}, raw_cache[:queue])
 
     @cache.evict(:b)
+
     raw_cache = @cache.raw
 
     assert_equal({a: 1, g: 7},
                  raw_cache[:cache])
     assert_equal({a: nil, f: nil, e: nil, g: nil},
+                 raw_cache[:stack])
+    assert_equal({}, raw_cache[:queue])
+
+    @cache.store(:h, 8)
+    @cache.store(:i, 9)
+    @cache.evict(:i)
+
+    raw_cache = @cache.raw
+
+    assert_equal({a: 1, g: 7, h: 8},
+                 raw_cache[:cache])
+    assert_equal({a: nil, f: nil, e: nil, g: nil, h: nil, i: nil},
                  raw_cache[:stack])
     assert_equal({}, raw_cache[:queue])
   end
