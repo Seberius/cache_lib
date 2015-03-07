@@ -10,7 +10,16 @@ rvm:
   - ruby-head
   - jruby-head
 
-addons:
-  code_climate:
-    repo_token:
-      secure: GkZRpKpf6hYEaWFf4NvB7OgbF3obhbDvzzbLY5AVutccgF4ifk2cVLyzqqRwmYiwAlVze08JePddFZxQppcDo4AuuMDU8+SDt16jr20GAI4S/+FrV8J6p7suXEQNvQxuZONFDQpi/K9jAHlJgzEVYLhWT72v2JH9fghnfVcv13w=
+matrix:
+  allow_failures:
+    - rvm: ruby-head
+    - rvm: jruby-head
+
+  include:
+  - rvm: 2.2
+    addons:
+      code_climate:
+        repo_token:
+          secure: GkZRpKpf6hYEaWFf4NvB7OgbF3obhbDvzzbLY5AVutccgF4ifk2cVLyzqqRwmYiwAlVze08JePddFZxQppcDo4AuuMDU8+SDt16jr20GAI4S/+FrV8J6p7suXEQNvQxuZONFDQpi/K9jAHlJgzEVYLhWT72v2JH9fghnfVcv13w=
+
+  fast_finish: true

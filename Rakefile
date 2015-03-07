@@ -7,4 +7,8 @@ Rake::TestTask.new(:test) do |test|
   test.verbose = true
 end
 
+task :benchmark do
+  ruby 'benchmarks/benchmark.rb'
+end
+
 task default: :test

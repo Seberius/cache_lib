@@ -19,8 +19,17 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(/test/)
   gem.require_paths = ['lib']
 
-  gem.add_development_dependency 'bundler', '~> 1.7'
   gem.add_development_dependency 'rake', '~> 10'
+
+  # Testing
   gem.add_development_dependency 'minitest', '~> 5.5'
   gem.add_development_dependency 'timecop', '~> 0.7'
+  gem.add_development_dependency 'codeclimate-test-reporter', '~> 0.4'
+
+  # Benchmarks
+  gem.add_development_dependency 'lru'
+  gem.add_development_dependency 'lru_cache'
+  gem.add_development_dependency 'threadsafe-lru'
+  gem.add_development_dependency 'lru_redux'
+  gem.add_development_dependency 'fast_cache'
 end

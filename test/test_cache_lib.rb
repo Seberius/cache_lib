@@ -1,6 +1,8 @@
-require 'codeclimate-test-reporter'
+if RUBY_VERSION >= "2.2.0"
+  require 'codeclimate-test-reporter'
 
-CodeClimate::TestReporter.start
+  CodeClimate::TestReporter.start
+end
 
 require 'cache_lib'
 require 'minitest'
