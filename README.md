@@ -28,30 +28,54 @@ The LIRS cache implements the Low Inter-Reference Recency Set eviction policy.  
 If you are looking for a LRU cache that supports an earlier version or just want an alternative LRU cache, please take a look at [LruRedux](https://github.com/SamSaffron/lru_redux).
 
 ## Usage
-### Creating a cache
+### Creating
 ```ruby
 require 'cache_lib'
+```
+CacheLib#create is module method that will return an object of the class and settings of the arguments passed to it.  The class can also be instantiated directly with #new.
 
-# Basic
+##### Basic cache
+```ruby
 cache = CacheLib.create :basic
-
-# FIFO with a limit of 100
+cache = CacheLib::Basic::Cache.new
+# Thread safe
+cache = CacheLib.safe_create :basic
+cache = CacheLib::Basic::SafeCache.new
+```
+##### FIFO cache with limit of 100
+```ruby
 cache = CacheLib.create :fifo, 100
-
-# LRU with a limit of 100
+cache = CacheLib::FIFO::Cache.new(100)
+# Thread safe
+cache = CacheLib.safe_create :fifo, 100
+cache = CacheLib::FIFO::SafeCache.new(100)
+```
+##### LRU cache with limit of 100
+```ruby
 cache = CacheLib.create :lru, 100
-
-# TTL with a limit of 100 and a ttl of 5 minutes.
+cache = CacheLib::LRU::Cache.new(100)
+# Thread safe
+cache = CacheLib.safe_create :lru, 100
+cache = CacheLib::LRU::SafeCache.new(100)
+```
+##### TTL cache with limit of 100 and ttl of 5 minutes
+```ruby
 cache = CacheLib.create :ttl, 100, 5 * 60
-
-# LIRS with a cache limit of 100, made up of a S limit of 95 and a Q limit of 5.
+cache = CacheLib::TTL::Cache.new(100, 5 * 60)
+# Thread safe
+cache = CacheLib.safe_create :ttl, 100, 5 * 60
+cache = CacheLib::TTL::SafeCache.new(100, 5 * 60)
+```
+##### LIRS cache with limit of 100 (stack limit of 95, queue limit of 5)
+```ruby
 cache = CacheLib.create :lirs, 95, 5
-
-# Threadsafe versions of every cache can be made by using CacheLib.safe_create
+cache = CacheLib::LIRS::Cache.new(95, 5)
+# Thread safe
 cache = CacheLib.safe_create :lirs, 95, 5
+cache = CacheLib::LIRS::SafeCache.new(95, 5)
 ```
 
-### Using the cache
+### Accessing and storing items.
 ```ruby
 # Cache methods remain the same across all variations
 cache = CacheLib.create :lru, 100
@@ -134,39 +158,69 @@ cache.values
 # .size returns the current number of items that are cached.
 cache.size
 # => 3
+```
 
-# .limit returns the current cache limit.
-cache.limit
-# => 100
+### Updating settings
+Every cache shares the same api, but a setting may not be used.
+```ruby
+# e.g.
+cache = CacheLib.create :lirs, 95, 5
+# LIRS cache does not use a ttl, so the value is discarded and nil is returned.
+cache.ttl = 6 * 60
+# => nil
+```
 
-# The limit can be changed with .limit=.
-cache.limit = 125
-# => 125
-
-# .clear removes all items from the cache.
-cache.clear
+##### Basic
+```ruby
+cache.limit = 90
 # => nil
 
-# The LIRS and TTL caches have additional options for .limit=.
-lirs = CacheLib.create :lirs, 95, 5
-ttl = CacheLib.create :ttl, 100, 5 * 60
+cache.ttl = 6 * 60
+# => nil
+```
 
-# LIRS require both the Stack limit and Queue limit be given,
-# and their sum is the cache limit.
-lirs.limit = 120, 5
-# => [120, 5]
-lirs.limit
-# => 125
+##### FIFO and LRU
+```ruby
+# A limit change will trigger pruning of the oldest items
+# if the current cache size is larger than the new limit.
+cache.limit = 90
+# => 90
 
-# TTL can have a new limit and ttl set at the same time.
-ttl.limit = 125, 10 * 60
-# => [125, 600]
+cache.ttl = 6 * 60
+# => nil
+```
 
-# Or just the limit
-ttl.limit = 150
+##### TTL
+```ruby
+# A limit change will trigger pruning of the oldest items
+# if the current cache size is larger than the new limit.
+cache.limit = 90
+# => 90
 
-# Or just the ttl
-ttl.limit = nil, 6 * 60
+# A ttl change will always trigger a ttl eviction under the new ttl.
+cache.ttl = 6 * 60
+# => 360
+
+# ttl can also be updated through limit
+cache.limit = 100, 4 * 60
+# => [100, 240]
+cache.limit = nil, 3 * 60
+# => [nil, 180]
+
+# A manual ttl eviction can be trigged using the #expire method.
+cache.expire
+# => nil
+```
+
+##### LIRS
+```ruby
+# A limit change will trigger pruning of the oldest items
+# if the current cache size is larger than the new limit.
+cache.limit = 85, 5
+# => [85, 5]
+
+cache.ttl = 6 * 60
+# => nil
 ```
 
 ## Credits and Notices

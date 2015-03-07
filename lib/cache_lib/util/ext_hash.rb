@@ -19,7 +19,7 @@ module CacheLib
       end
 
       def pop_tail
-        delete(first[0])
+        shift
       end
 
       def refresh(key)
