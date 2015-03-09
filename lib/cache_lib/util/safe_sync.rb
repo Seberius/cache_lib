@@ -3,10 +3,16 @@ require 'monitor'
 module CacheLib
   module Util
     module SafeSync
-      include MonitorMixin
-
       def initialize(*args)
         super(*args)
+
+        self.extend(MonitorMixin)
+      end
+
+      def initialize_copy(source)
+        super(source)
+
+        self.extend(MonitorMixin)
       end
 
       def limit
@@ -54,6 +60,18 @@ module CacheLib
       def fetch(key)
         synchronize do
           super(key)
+        end
+      end
+
+      def peek(key)
+        synchronize do
+          super(key)
+        end
+      end
+
+      def swap(key, value)
+        synchronize do
+          super(key, value)
         end
       end
 
@@ -111,7 +129,7 @@ module CacheLib
         end
       end
 
-      def inspect
+      def to_s
         synchronize do
           super
         end
@@ -121,6 +139,7 @@ module CacheLib
       alias_method :[]=, :store
       alias_method :delete, :evict
       alias_method :has_key?, :key?
+      alias_method :member?, :key?
       alias_method :length, :size
     end
   end

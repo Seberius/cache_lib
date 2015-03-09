@@ -57,6 +57,13 @@ module CacheLib
         end
       end
 
+      # def peek
+      alias_method :peek, :lookup
+
+      def swap(key, value)
+        @cache[key] = value if @cache.key?(key)
+      end
+
       def evict(key)
         @cache.delete(key)
       end
@@ -106,7 +113,7 @@ module CacheLib
           cache: @cache.clone }
       end
 
-      def inspect
+      def to_s
         "#{self.class}, "\
         "Limit: #{@limit}, "\
         "Size: #{@cache.size}"
@@ -116,6 +123,7 @@ module CacheLib
       alias_method :[]=, :store
       alias_method :delete, :evict
       alias_method :has_key?, :key?
+      alias_method :member?, :key?
       alias_method :length, :size
 
       protected

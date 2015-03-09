@@ -105,7 +105,7 @@ module CacheLib
           queue: @queue.clone }
       end
 
-      def inspect
+      def to_s
         "#{self.class}, "\
         "Limit: #{@limit}, "\
         "TTL: #{@ttl}, "\

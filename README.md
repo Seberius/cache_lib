@@ -1,9 +1,7 @@
-# CacheLib
-[![Gem Version](https://badge.fury.io/rb/cache_lib.svg)](http://badge.fury.io/rb/cache_lib)
+# CacheLib [![Gem Version](https://badge.fury.io/rb/cache_lib.svg)](http://badge.fury.io/rb/cache_lib) [![Dependency Status](https://gemnasium.com/Seberius/cache_lib.svg)](https://gemnasium.com/Seberius/cache_lib)
 [![Build Status](https://travis-ci.org/Seberius/cache_lib.svg?branch=master)](https://travis-ci.org/Seberius/cache_lib)
 [![Code Climate](https://codeclimate.com/github/Seberius/cache_lib/badges/gpa.svg)](https://codeclimate.com/github/Seberius/cache_lib)
 [![Test Coverage](https://codeclimate.com/github/Seberius/cache_lib/badges/coverage.svg)](https://codeclimate.com/github/Seberius/cache_lib)
-[![Dependency Status](https://gemnasium.com/Seberius/cache_lib.svg)](https://gemnasium.com/Seberius/cache_lib)
 #### A Ruby caching library implementing Basic, FIFO, LRU, TTL and LIRS caches.
 
 ##### CacheLib is young library and breaking api changes are still possible.  Please read the release notes before upgrading.
@@ -75,12 +73,10 @@ cache = CacheLib.safe_create :lirs, 95, 5
 cache = CacheLib::LIRS::SafeCache.new(95, 5)
 ```
 
-### Accessing and storing items.
+### Using the cache.
+##### #get
 ```ruby
-# Cache methods remain the same across all variations
-cache = CacheLib.create :lru, 100
-
-# .get is the primary method for accessing the cache.
+# #get is the primary method for accessing the cache.
 # It requires a key and block that will generate the value that is stored
 # if the key is not cached.
 cache.get(:a) { 'Apple' }
@@ -89,19 +85,23 @@ cache.get(:b) { 'Beethoven' }
 # => 'Beethoven'
 cache.get(:a) { 'Apricot' }
 # => 'Apple'
-
-# .store takes a key and value and implements the functionality of Hash#store.
+```
+##### #store and []=
+```ruby
+# #store takes a key and value and implements the functionality of Hash#store.
 # Will refresh the key in LRU and LIRS caches.
 cache.store(:c, 'Chopin')
 # => 'Chopin'
 cache.store(:a, 'Mozart')
 # => 'Mozart'
 
-# []= is equivalent to .store.
+# []= is equivalent to #store.
 cache[:d] = 'Denmark'
 # => 'Denmark'
-
-# .lookup takes a key and returns either the value if the key is cached or nil if it is not.
+```
+##### #lookup and []
+```ruby
+# #lookup takes a key and returns either the value if the key is cached or nil if it is not.
 cache.lookup(:c)
 # => 'Chopin'
 cache.lookup(:t)
@@ -110,58 +110,98 @@ cache.lookup(:t)
 # [] is equivalent to .lookup.
 cache[:a]
 # => 'Mozart'
-
-# .fetch is similar to .lookup,
+```
+##### #fetch
+```ruby
+# #fetch is similar to #lookup,
 # but takes an optional block that will execute if the key is not cached.
 cache.fetch(:c)
 # => 'Chopin'
 cache.fetch(:r) { 21 * 2 }
 # => 42
-
-# .evict takes a key and will remove the key from the cache and return the associated value.
+```
+##### #evict (#delete).
+```ruby
+# #evict takes a key and will remove the key from the cache and return the associated value.
 # Returns nil is the key is not cached.
 cache.evict(:d)
 # => 'Denmark'
 cache.evict(:r)
 # => nil
 
-# .delete is equivalent to .evict
-cache.delete(:x)
-# => nil
+# ALIAS: #delete
+```
 
+##### #each
+```ruby
 # .each takes each key value pair and applies the given block to them.
 cache.each { |_, value| puts value }
 # => 'Chopin'
 # => 'Mozart'
 # => 'Beethoven'
+```
 
+##### #key? (#has_key?, #member?)
+```ruby
 # .key? takes a key and returns true if it is cached and false if it is not.
 cache.key?(:a)
 # => true
 cache.key?(:g)
 # => false
 
-# .to_a returns an array of arrays of key value pairs that are cached.
+# ALIAS: #has_key? and #member?
+```
+
+##### #to_a
+```ruby
+# #to_a returns an array of arrays of key value pairs that are cached.
 # Basic, FIFO and LIRS are insertion ordered while LRU and TTL are recency ordered,
 # starting with the newest.
 cache.to_a
 # => [[:c, 'Chopin'], [:a, 'Mozart'], [:b, 'Beethoven']]
+```
 
-# .keys returns an array of the keys that are cached.
+##### #keys and #values
+```ruby
+# #keys returns an array of the keys that are cached.
 cache.keys
 # => [:c, :a, :b]
 
-# .values returns an array of the values that are cached.
+# #values returns an array of the values that are cached.
 cache.values
 # => ['Chopin', 'Mozart', 'Beethoven']
-
-# .size returns the current number of items that are cached.
-cache.size
-# => 3
 ```
 
-### Updating settings
-Every cache shares the same api, but a setting may not be used.
+##### #size (#length)
+```ruby
+# #size returns the current number of items that are cached.
+cache.size
+# => 3
+
+# ALIAS: #length
+```
+
+##### #count
+```ruby
+# #count functions like the Hash#count.
+cache.count { |_, value| value == 'Chopin' }
+# => 1
+```
+
+##### #expire
+```ruby
+# #expire will trigger a ttl based eviction in caches which make use of ttl
+cache.expire
+# => nil
+```
+
+##### #raw
+```ruby
+# #raw returns clone of the internal
+```
+
+### Cache settings
+Every cache shares the same api, but a setting may not be used in some caches.
 ```ruby
 # e.g.
 cache = CacheLib.create :lirs, 95, 5
@@ -170,63 +210,38 @@ cache.ttl = 6 * 60
 # => nil
 ```
 
-##### Basic
+##### Limit
+A limit change will trigger pruning of the lowest priority (e.g. least recently accessed in LRU) items if the current cache size is larger than the new limit.
 ```ruby
+# Basic (does not use limit)
 cache.limit = 90
 # => nil
 
-cache.ttl = 6 * 60
-# => nil
-```
-
-##### FIFO and LRU
-```ruby
-# A limit change will trigger pruning of the oldest items
-# if the current cache size is larger than the new limit.
+# FIFO, LRU and TTL
 cache.limit = 90
 # => 90
 
-cache.ttl = 6 * 60
-# => nil
+# LIRS
+cache.limit = 85, 5
+# => [85, 5]
 ```
 
 ##### TTL
+A ttl change will trigger the eviction of items that are considered expired under the new ttl.
 ```ruby
-# A limit change will trigger pruning of the oldest items
-# if the current cache size is larger than the new limit.
-cache.limit = 90
-# => 90
+# Basic, FIFO, LRU and LIRS (does not use ttl)
+cache.ttl = 6 * 60
+# => nil
 
-# A ttl change will always trigger a ttl eviction under the new ttl.
+# TTL
 cache.ttl = 6 * 60
 # => 360
-
-# ttl can also be updated through limit
-cache.limit = 100, 4 * 60
-# => [100, 240]
-cache.limit = nil, 3 * 60
-# => [nil, 180]
-
-# A manual ttl eviction can be trigged using the #expire method.
-cache.expire
-# => nil
-```
-
-##### LIRS
-```ruby
-# A limit change will trigger pruning of the oldest items
-# if the current cache size is larger than the new limit.
-cache.limit = 85, 5
-# => [85, 5]
-
-cache.ttl = 6 * 60
-# => nil
 ```
 
 ## Benchmark
 Ruby 2.2.0
 `rake benchmark`
-```ruby
+```
 ** LRU Benchmarks **
 Rehearsal -------------------------------------------------
 Lru             2.210000   0.010000   2.220000 (  2.230479)

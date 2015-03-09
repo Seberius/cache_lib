@@ -42,12 +42,12 @@ class TestTtlCache < TestBasicCache
     assert_equal CacheLib::Util::ExtHash, @cache.raw[:queue].class
   end
 
-  def test_inspect
+  def test_to_s
     @cache.store(:a, 1)
     @cache.store(:b, 2)
 
     assert_equal "#{@cache.class}, Limit: 5, TTL: 300, Size: 2",
-                 @cache.inspect
+                 @cache.to_s
   end
 
   def test_lru_promotion

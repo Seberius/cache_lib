@@ -15,12 +15,12 @@ class TestFifoCache < TestBasicCache
     assert_equal 90, @cache.limit
   end
 
-  def test_inspect
+  def test_to_s
     @cache.store(:a, 1)
     @cache.store(:b, 2)
 
     assert_equal "#{@cache.class}, Limit: 5, Size: 2",
-                 @cache.inspect
+                 @cache.to_s
   end
 
   def test_fifo_eviction

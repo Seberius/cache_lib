@@ -71,6 +71,22 @@ class TestBasicCache < MiniTest::Test
     assert_equal nil, @cache[:z]
   end
 
+  def test_peek
+    @cache.store(:a, 1)
+    @cache.store(:b, 2)
+
+    assert_equal 1, @cache.peek(:a)
+    assert_equal nil, @cache.peek(:z)
+  end
+
+  def test_swap
+    @cache.store(:a, 1)
+    @cache.store(:b, 2)
+
+    assert_equal 3, @cache.swap(:a, 3)
+    assert_equal nil, @cache.swap(:y, 4)
+  end
+
   def test_evict
     @cache.store(:a, 1)
     @cache.store(:b, 2)
@@ -165,12 +181,12 @@ class TestBasicCache < MiniTest::Test
     assert_equal CacheLib::Util::ExtHash, @cache.raw[:cache].class
   end
 
-  def test_inspect
+  def test_to_s
     @cache.store(:a, 1)
     @cache.store(:b, 2)
 
     assert_equal "#{@cache.class}, Limit: , Size: 2",
-                 @cache.inspect
+                 @cache.to_s
   end
 
   def test_clone
@@ -181,7 +197,6 @@ class TestBasicCache < MiniTest::Test
 
     assert_equal @cache.size, clone.size
     assert_equal @cache.lookup(:a), @cache.lookup(:a)
-    assert_equal @cache.inspect, clone.inspect
 
     clone.evict(:a)
 
