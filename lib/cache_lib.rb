@@ -6,6 +6,8 @@ require_relative 'cache_lib/lirs'
 require_relative 'cache_lib/version'
 
 module CacheLib
+  extend self
+
   CACHES = { basic: Basic::Cache,
              fifo:  FIFO::Cache,
              lru:   LRU::Cache,
@@ -18,17 +20,17 @@ module CacheLib
                   ttl:   TTL::SafeCache,
                   lirs:  LIRS::SafeCache }
 
-  def self.create(type, *args)
+  def create(type, *args)
     self.cache_new(type, CACHES, *args)
   end
 
-  def self.safe_create(type, *args)
+  def safe_create(type, *args)
     self.cache_new(type, SAFE_CACHES, *args)
   end
 
   protected
 
-  def self.cache_new(type, caches, *args)
+  def cache_new(type, caches, *args)
     fail ArgumentError "Cache type not recognized: #{type}" unless
         caches.key?(type)
 
