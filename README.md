@@ -89,7 +89,7 @@ cache.get(:a) { 'Apricot' }
 ##### #store and []=
 ```ruby
 # #store takes a key and value and implements the functionality of Hash#store.
-# Will refresh the key in LRU and LIRS caches.
+# Will refresh key priority in LRU, TTL and LIRS caches.
 cache.store(:c, 'Chopin')
 # => 'Chopin'
 cache.store(:a, 'Mozart')
@@ -102,6 +102,7 @@ cache[:d] = 'Denmark'
 ##### #lookup and []
 ```ruby
 # #lookup takes a key and returns either the value if the key is cached or nil if it is not.
+# Will refresh key priority in LRU, TTL and LIRS caches.
 cache.lookup(:c)
 # => 'Chopin'
 cache.lookup(:t)
@@ -119,6 +120,23 @@ cache.fetch(:c)
 # => 'Chopin'
 cache.fetch(:r) { 21 * 2 }
 # => 42
+```
+##### #peek
+```ruby
+# #peek is similar to lookup but will NOT refresh the key priority.
+cache.peek(:c)
+# => 'Chopin'
+cache.peek(:t)
+# => nil
+```
+##### #swap
+```ruby
+# #swap will replace a value on a currently cached key.
+# Returns nil if the key is currently not cached.
+cache.swap(:c, 'Chopin')
+# => 'Chopin'
+cache.swap(:w, 'Mozart')
+# => nil
 ```
 ##### #evict (#delete).
 ```ruby
@@ -210,7 +228,7 @@ cache.ttl = 6 * 60
 # => nil
 ```
 
-##### Limit
+#### Limit
 A limit change will trigger pruning of the lowest priority (e.g. least recently accessed in LRU) items if the current cache size is larger than the new limit.
 ```ruby
 # Basic (does not use limit)
@@ -226,7 +244,7 @@ cache.limit = 85, 5
 # => [85, 5]
 ```
 
-##### TTL
+#### TTL
 A ttl change will trigger the eviction of items that are considered expired under the new ttl.
 ```ruby
 # Basic, FIFO, LRU and LIRS (does not use ttl)
